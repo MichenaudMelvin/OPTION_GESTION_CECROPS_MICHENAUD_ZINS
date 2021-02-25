@@ -2,26 +2,52 @@ label strategieMap:
     call screen conquete_map
 
 label islesbury:
-    s "Ok"
+    if(king == 1):
+        menu:
+            o "Woah, vous voulez deja vous attaquez à la plus grande puissance de l'île ??"
+            "Oui":
+                $ possibiliteFarm = True
+                jump finish
+            "Non":
+                jump finish
+    else:
+        s "Ok"
 
-    s "J'ai la dalle, on attaque Islebury"
-
-    jump finish
+        s "J'ai la dalle, on attaque Islebury"
+        $ possibiliteFarm = False
+        jump finish
 
 label redwater:
+    if(king == 2):
+        menu:
+            o "Woah, vous voulez deja vous attaquez à la plus grande puissance de l'île ??"
+            "Oui":
+                $ possibiliteFarm = True
+                jump finish
+            "Non":
+                jump finish
+    else:
+        s "Ok"
 
-    s "Ok"
-
-    s "J'ai la dalle, on attaque Redwater"
-
-    jump finish
+        s "J'ai la dalle, on attaque Redwater"
+        $ possibiliteFarm = False
+        jump finish
 
 label swanford:
-    s "Ok"
+    if(king == 3):
+        menu:
+            o "Woah, vous voulez deja vous attaquez à la plus grande puissance de l'île ??"
+            "Oui":
+                $ possibiliteFarm = True
+                jump finish
+            "Non":
+                jump finish
+    else:
+        s "Ok"
 
-    s "J'ai la dalle, on attaque Swanford"
-
-    jump finish
+        s "J'ai la dalle, on attaque Swanford"
+        $ possibiliteFarm = False
+        jump finish
 
 label ourBase:
 

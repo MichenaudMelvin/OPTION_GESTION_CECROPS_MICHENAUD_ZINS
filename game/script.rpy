@@ -2,14 +2,32 @@
 define o = Character("OtherRandomCharacter")
 
 label start:
+    #ici definition de variable et des choses qui changeront pas trop
     $ ressourceBois = 200
     $ ressourcePierre = 200
-    scene villageDuScenateur
+    $ possibiliteFarm = True
+    $ debutJeu = True #Juste pour un dialogue (Pour l'instant)
 
+    $ king = renpy.random.randint(1, 3) #definition aléatoire de la cité maitre de l'île 1 = islesbury / 2 = redwater / 3 = swanford
+    
+    scene villageDuScenateur
+    show ressourcebois:
+        xalign 0.005
+        yalign 0.02
+    show ressourcepierre:
+        xalign 0.02
+        yalign 0.25
+    #mettre à cotes des icones (qui sont trop grandes) le totalt de ressources
+    #{outlinecolor=#000000}{/outlinecolor}
+    show text "[ressourceBois]\n\n\n\n\n[ressourcePierre]":
+        xalign 0.14
+        yalign 0.1
+
+label jeu:
     show senateur:
         xalign 0.5
         yalign 1.0
-    
+      
     s "Pensez à ne pas coder sur la branche 'main' et a coder en pull request"
 
     s "Pour cela, allez sur github desktop --> curent branch --> new branch et nommer votre branch"
@@ -37,7 +55,7 @@ label start:
             s "Ok"
     
     menu:
-        s "Tu voudrais plutot voir le fram de ressources alros ?"
+        s "Tu voudrais plutot voir le fram de ressources alors ?"
         "Oui":
             jump framRessources
         "Non":
@@ -54,3 +72,12 @@ screen conquete_map():
         hotspot (834, 216, 58, 49) action Jump("redwater")
         hotspot (838, 418, 59, 49) action Jump("swanford")
         hotspot (349, 463, 62, 49) action Jump("ourBase")
+        if(king == 1):
+            #islesbury
+            add "king.png" xalign 0.496 yalign 0.16
+        if(king == 2):
+            #redwater
+            add "king.png" xalign 0.683 yalign 0.235
+        if(king == 3):
+            #swanford
+            add "king.png" xalign 0.688 yalign 0.54
