@@ -2,6 +2,8 @@
 define o = Character("OtherRandomCharacter")
 
 label start:
+    $ ressourceBois = 200
+    $ ressourcePierre = 200
     scene villageDuScenateur
 
     show senateur:
@@ -31,6 +33,13 @@ label start:
         "Oui":
             hide senateur
             jump strategieMap
+        "Non":
+            s "Ok"
+    
+    menu:
+        s "Tu voudrais plutot voir le fram de ressources alros ?"
+        "Oui":
+            jump framRessources
         "Non":
             s "Ok, a bientot alors"
     return
