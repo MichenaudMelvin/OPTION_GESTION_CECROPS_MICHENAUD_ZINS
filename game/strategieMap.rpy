@@ -4,7 +4,7 @@ label strategieMap:
 label islesbury:
     if(king == 1):
         menu:
-            o "Woah, vous voulez deja vous attaquez à la plus grande puissance de l'île ??"
+            o "Woah, vous voulez deja vous attaquez à la plus grande puissance de l'île ?!"
             "Oui":
                 $ possibiliteFarm = True
                 jump finish
@@ -20,7 +20,7 @@ label islesbury:
 label redwater:
     if(king == 2):
         menu:
-            o "Woah, vous voulez deja vous attaquez à la plus grande puissance de l'île ??"
+            o "Woah, vous voulez deja vous attaquez à la plus grande puissance de l'île ?!"
             "Oui":
                 $ possibiliteFarm = True
                 jump finish
@@ -36,7 +36,7 @@ label redwater:
 label swanford:
     if(king == 3):
         menu:
-            o "Woah, vous voulez deja vous attaquez à la plus grande puissance de l'île ??"
+            o "Woah, vous voulez deja vous attaquez à la plus grande puissance de l'île ?!"
             "Oui":
                 $ possibiliteFarm = True
                 jump finish

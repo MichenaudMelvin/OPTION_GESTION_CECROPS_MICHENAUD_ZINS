@@ -1,10 +1,15 @@
 ﻿define s = Character("Senateur")
 define o = Character("OtherRandomCharacter")
 
+#pour gestion diplomatie :
+#faire un générateur de situation ex : "un chien a accidentellement brulé l'écurie" / "un prince a mangé toutes les pommes"
+#regarder comme reign fonctionne
+
 label start:
     #ici definition de variable et des choses qui changeront pas trop
     $ ressourceBois = 200
     $ ressourcePierre = 200
+    $ ressourceHumain = 100
     $ possibiliteFarm = True
     $ debutJeu = True #Juste pour un dialogue (Pour l'instant)
 
@@ -17,9 +22,9 @@ label start:
     show ressourcepierre:
         xalign 0.02
         yalign 0.25
-    #mettre à cotes des icones (qui sont trop grandes) le totalt de ressources
+    #les icones sont trop grandes
     #{outlinecolor=#000000}{/outlinecolor}
-    show text "[ressourceBois]\n\n\n\n\n[ressourcePierre]":
+    show text "[ressourceBois]\n\n\n\n\n[ressourcePierre]\n\n\n\n\n[ressourceHumain]":
         xalign 0.14
         yalign 0.1
 
@@ -68,16 +73,16 @@ screen conquete_map():
         idle "map"
         hover "maphovered"
 
-        hotspot (605, 157, 62, 53) action Jump("islesbury")
-        hotspot (834, 216, 58, 49) action Jump("redwater")
-        hotspot (838, 418, 59, 49) action Jump("swanford")
-        hotspot (349, 463, 62, 49) action Jump("ourBase")
+        hotspot (587, 150, 100, 63) action Jump("islesbury")
+        hotspot (813, 209, 100, 63) action Jump("redwater")
+        hotspot (818, 411, 99, 64) action Jump("swanford")
+        hotspot (329, 456, 99, 63) action Jump("ourBase")
         if(king == 1):
             #islesbury
-            add "king.png" xalign 0.496 yalign 0.16
-        if(king == 2):
+            add "king.png" xalign 0.496 yalign 0.14
+        elif(king == 2):
             #redwater
-            add "king.png" xalign 0.683 yalign 0.235
-        if(king == 3):
+            add "king.png" xalign 0.683 yalign 0.231
+        elif(king == 3):
             #swanford
-            add "king.png" xalign 0.688 yalign 0.54
+            add "king.png" xalign 0.687 yalign 0.52
