@@ -2,60 +2,38 @@ label strategieMap:
     call screen conquete_map
 
 label islesbury:
-    if(king == 1):
-        menu:
-            o "Woah, vous voulez deja vous attaquez à la plus grande puissance de l'île ?!"
-            "Oui":
-                $ possibiliteFarm = True
-                jump finish
-            "Non":
-                jump finish
-    else:
-        s "Ok"
-
-        s "J'ai la dalle, on attaque Islebury"
-        $ possibiliteFarm = False
-        jump finish
+    $ villageChoisi = "Islesbury"
+    jump conquete
 
 label redwater:
-    if(king == 2):
-        menu:
-            o "Woah, vous voulez deja vous attaquez à la plus grande puissance de l'île ?!"
-            "Oui":
-                $ possibiliteFarm = True
-                jump finish
-            "Non":
-                jump finish
-    else:
-        s "Ok"
-
-        s "J'ai la dalle, on attaque Redwater"
-        $ possibiliteFarm = False
-        jump finish
+    $ villageChoisi = "Redwater"
+    jump conquete
 
 label swanford:
-    if(king == 3):
-        menu:
-            o "Woah, vous voulez deja vous attaquez à la plus grande puissance de l'île ?!"
-            "Oui":
-                $ possibiliteFarm = True
-                jump finish
-            "Non":
-                jump finish
-    else:
-        s "Ok"
-
-        s "J'ai la dalle, on attaque Swanford"
-        $ possibiliteFarm = False
-        jump finish
+    $ villageChoisi = "Swanford"
+    jump conquete
 
 label ourBase:
-
     o "Heu... monsieur le sénateur... c'est notre base..."
     jump strategieMap
 
-label finish:
-
-    s "voila, c'est a peu près à ça que ça va ressembler"
-    s "le nom des villes est a revoir je pense mais c'est deja pas mal"
-    return
+label conquete:
+    $ possibiliteFarm = True
+    s "Bien, attaquons [villageChoisi] !"
+    o "Pour rappel [villageChoisi] : est composé de x hommes"
+    #il faudrait mieux faires des classes pour chaque ville
+    if(king == 1 and villageChoisi == "Islesbury" and debutJeu == True):
+        o "Woah, vous voulez déjà vous attaquer à [villageChoisi] ?! Je vous rappele que c'est la plus grande puissance de l'île !"
+    elif(king == 2 and villageChoisi == "Redwater" and debutJeu == True):
+        o "Woah, vous voulez déjà vous attaquer à [villageChoisi] ?! Je vous rappele que c'est la plus grande puissance de l'île !"
+    elif(king == 2 and villageChoisi == "Swanford" and debutJeu == True):
+        o "Woah, vous voulez déjà vous attaquer à [villageChoisi] ?! Je vous rappele que c'est la plus grande puissance de l'île !"
+    
+    menu:
+        o "Voulez-vous toujours attaquer [villageChoisi] ?"
+        "Oui":
+            s "Oui, allons-y !"
+        "Non":
+            jump jeu
+    
+    s "et paf"
