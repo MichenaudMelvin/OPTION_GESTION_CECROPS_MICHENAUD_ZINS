@@ -1,6 +1,6 @@
 #Not working
 label framRessources:
-    if (possibiliteFarm == True):
+    if (joueur.possibiliteFarm == True):
         menu:
             s "Vous voulez vraiment farmez un peu de bois et de pierre ?"
             "Oui":
@@ -18,7 +18,7 @@ label farm:
             humainEnvoyes = 0
     
     #not working
-    if (humainEnvoyes > ressourceHumain):
+    if (humainEnvoyes > joueur.getRessourceHumain):
             o "Vous n'avez pas assez d'Hommes pour tout récolez, veuillez réduire vos ambitions"
             jump farm
     

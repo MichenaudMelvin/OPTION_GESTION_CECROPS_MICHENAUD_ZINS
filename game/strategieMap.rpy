@@ -2,15 +2,15 @@ label strategieMap:
     call screen conquete_map
 
 label islesbury:
-    $ villageChoisi = "Islesbury"
+    $ islesbury.choixVillage(True)
     jump conquete
 
 label redwater:
-    $ villageChoisi = "Redwater"
+    $ redwater.choixVillage(True)
     jump conquete
 
 label swanford:
-    $ villageChoisi = "Swanford"
+    $ swanford.choixVillage(True)
     jump conquete
 
 label ourBase:
@@ -18,15 +18,15 @@ label ourBase:
     jump strategieMap
 
 label conquete:
-    $ possibiliteFarm = True
+    $ joueur.possibiliteFarm(True)
     s "Bien, attaquons [villageChoisi] !"
     o "Pour rappel [villageChoisi] : est composé de x hommes"
     #il faudrait mieux faires des classes pour chaque ville
-    if(king == 1 and villageChoisi == "Islesbury" and debutJeu == True):
+    if(islesbury.getKing == True and islesbury.getVillageChoisi == True and joueur.getDebutJeu == True):
         o "Woah, vous voulez déjà vous attaquer à [villageChoisi] ?! Je vous rappele que c'est la plus grande puissance de l'île !"
-    elif(king == 2 and villageChoisi == "Redwater" and debutJeu == True):
+    elif(redwater.getKing == True and redwater.getVillageChoisi == True and joueur.getDebutJeu == True):
         o "Woah, vous voulez déjà vous attaquer à [villageChoisi] ?! Je vous rappele que c'est la plus grande puissance de l'île !"
-    elif(king == 2 and villageChoisi == "Swanford" and debutJeu == True):
+    elif(swanford.getKing == True and swanford.getVillageChoisi == True and joueur.getDebutJeu == True):
         o "Woah, vous voulez déjà vous attaquer à [villageChoisi] ?! Je vous rappele que c'est la plus grande puissance de l'île !"
     
     menu:
