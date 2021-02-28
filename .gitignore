@@ -1,11 +1,6 @@
-
-log.txt
 game/saves/persistent
-game/cache/bytecode.rpyb
-game/gui.rpyc
 *.rpyb
 *.rpyc
 *.save
 *.txt
 *.json
-game/gui.rpyc
