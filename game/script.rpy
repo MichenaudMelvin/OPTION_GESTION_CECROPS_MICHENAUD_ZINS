@@ -8,7 +8,7 @@ define personne = Character("")
 
 label start:
     #ici definition de variable et des choses qui changeront pas trop
-    $ joueur = Village("Lunaris", 200, 200, 100, 0, True, True, False, False)
+    $ joueur = VillageJoueur("Lunaris", 200, 200, 100, 0, True, True)
     python:
         nouveauNomVillage = renpy.input("Entrez le nom de votre village (10 caractères max) : ", length=10)
         if not nouveauNomVillage:
@@ -23,17 +23,17 @@ label start:
     $ king = renpy.random.randint(1, 3) #definition aléatoire de la cité maitre de l'île 1 = islesbury / 2 = redwater / 3 = swanford
     if(king == 1):
         #mettre valeurs aléatoire pour chaque truc
-        $ islesbur = Village("islesbur", 200, 200, 100, 0, False, False, True, False)
-        $ redwater = Village("redwater", 200, 200, 100, 0, False, False, False, False)
-        $ swanford = Village("swanford", 200, 200, 100, 0, False, False, False, False)
+        $ islesbur = Village("islesbur", 200, 200, 100, True, False)
+        $ redwater = Village("redwater", 200, 200, 100, False, False)
+        $ swanford = Village("swanford", 200, 200, 100, False, False)
     elif(king == 2):
-        $ islesbur = Village("islesbur", 200, 200, 100, 0, False, False, False, False)
-        $ redwater = Village("redwater", 200, 200, 100, 0, False, False, True, False)
-        $ swanford = Village("swanford", 200, 200, 100, 0, False, False, False, False)
+        $ islesbur = Village("islesbur", 200, 200, 100, False, False)
+        $ redwater = Village("redwater", 200, 200, 100, True, False)
+        $ swanford = Village("swanford", 200, 200, 100, False, False)
     elif(king == 3):
-        $ islesbur = Village("islesbur", 200, 200, 100, 0, False, False, False, False)
-        $ redwater = Village("redwater", 200, 200, 100, 0, False, False, False, False)
-        $ swanford = Village("swanford", 200, 200, 100, 0, False, False, True, False)
+        $ islesbur = Village("islesbur", 200, 200, 100, False, False)
+        $ redwater = Village("redwater", 200, 200, 100, False, False)
+        $ swanford = Village("swanford", 200, 200, 100, True, False)
     
     scene villageDuScenateur
     show ressourcebois:
@@ -55,7 +55,7 @@ label jeu:
         xalign 0.5
         yalign 1.0
     
-    s "Pensez à ne pas coder sur la branche 'main' et a coder en pull request"
+    s "Pensez à ne pas coder sur la branche 'main' et a coder en pull request [joueur.getRessourceBois]"
 
     s "Pour cela, allez sur github desktop --> curent branch --> new branch et nommer votre branch"
 
@@ -129,10 +129,14 @@ init python:
             return self.__ressourceHumain
         def renommer(self, nouveauNom):
             self.__nomVillage = nouveauNom
-    
+
     class VillageJoueur(Village):
-        def __init__(self, humainEpuises, possibiliteFarm, debutJeu):
-            Village.__init__(self)
+        def __init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain, humainEpuises, possibiliteFarm, debutJeu):
+            Village.__init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain)
+            self.__nomVillage = nomVillage #str / nom du village
+            self.__ressourceBois = ressourceBois #int / ressources en bois du village
+            self.__ressourcePierre = ressourcePierre #int / ressources en pierre du village
+            self.__ressourceHumain = ressourceHumain #int / ressources humaines du village
             self.__humainEpuises = humainEpuises #int / les ressources humaines envoyés après qu'ils ait fait une action
             self.__possibiliteFarm = possibiliteFarm #bool / si le joueur peut farm ou si il doit attendre / uniquement pour le joueur
             self.__debutJeu = debutJeu #bool / si le joueur vient de commencer ou non / uniquement pour le joueur
@@ -148,8 +152,12 @@ init python:
             self.__possibiliteFarm == bool
 
     class VillageEnnemi(Village):
-        def __init__(self, king, villageChoisi):
-            Village.__init__(self)
+        def __init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain, king, villageChoisi):
+            Village.__init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain)
+            self.__nomVillage = nomVillage #str / nom du village
+            self.__ressourceBois = ressourceBois #int / ressources en bois du village
+            self.__ressourcePierre = ressourcePierre #int / ressources en pierre du village
+            self.__ressourceHumain = ressourceHumain #int / ressources humaines du villag
             self.__king = king #bool / si le village est maitre de l'île / immpossible pour le village du joueur
             self.__villageChoisi = villageChoisi #bool / avant une attaque, pour savoir quel village est selectionné
         
