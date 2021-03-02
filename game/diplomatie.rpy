@@ -7,19 +7,20 @@ label diplomatie:
     o "Bonjour monsieur le sénateur"
     s "Bonjour"
     $ listeVille = ["Islesbur", "Redwater", "Swanford"]
-    $ villeAlea = listeVille[renpy.random.randint(0, 2)]
 
     $ listePerso = ["Un prêtre", "Un chevalier", "Le marquis", "L'écuyer", "Un paysant", "La marquise", "Le prince", "Un chien", "Un cochon", "Un cheval", "Les innondations", "Les intempéries", "Le vent"]
     #De 0 à 6 : personnages humains / De 7 à 9 : annimaux / De 10 à 12 : météo // longueur : 12
 
-    $ listeAction = ["a volé(e)", "a tué(e)", "a brulé", "a perdu", "s'est endormi", "a donné(e) de quoi manger à une famille fauchée", "a aidé(e) un paysant à récolter le blé", "a entraîné les soldats", "a vaincu un village ennemi"] #, "a sali", "", "a grandement aidé pendant une bataille contre [villeAlea]"]
-    #Pour humains : De 0 à 2 : Negatif / De 3 à 4 : neutre / De 5 à 8 : positif // Pour annimaux : De 9 à  X : Negatif
+    $ autrePersoAlea = listePerso[renpy.random.randint(0, 9)] #juste pour fait s'envoler [autrePersoAlea]
+    $ listeAction = ["a volé(e)", "a tué(e)", "a brulé", "a perdu", "s'est endormi", "a donné(e) de quoi manger à une famille fauchée", "a aidé(e) un paysant à récolter le blé", "a entraîné les soldats", "a vaincu un village ennemi", "a sali", "a dévoré", "a grandement aidé pendant une bataille contre [villeAlea]", "ont engloutis", "rendent le sol glissant", "fait tomber des troncs d'abres sur", "fait s'envoler [autrePersoAlea]"] #faire un systeme pour autrePersoAlea et villeAlea
+    #Pour humains : De 0 à 2 : Negatif / De 3 à 4 : neutre / De 5 à 8 : positif // Pour annimaux : De 9 à 10 : Negatif / 11 : positif // Pour météo : 12 à 15 // longueur : 15
 
-    $ listeContextuelle = [" une épée", " de l'argent", " du pain", " un des cuisiners", " un des chevaux du roi", " un traitre", " les récoles de blé", " une partie des écuries", " l'entièreté de la forêt", " plusieurs armes de différents soldats", " les clés de la prison", " durant un combat", " dans la forêt", " pour mieux se préparer à un combat"]
-    #Pour humains //// voler : De 0 à 1 : Negatif / 2 : neutre // tuer : De 3 à 4 : négatif / 5 : positif // bruler : De 6 à 8 : négatif // perdu : 9 : négatif / 10 neutre // endormi : 11 : negatif / 12 : neutre / 13 : positif //
+    $ listeContextuelle = [" une épée", " de l'argent", " du pain", " un des cuisiners", " un des chevaux du roi", " un traitre", " les récoles de blé", " une partie des écuries", " l'entièreté de la forêt", " plusieurs armes de différents soldats", " les clés de la prison", " durant un combat", " dans la forêt", " pour mieux se préparer à un combat", " les quartier royaux", " les équipement des soldats ce qui les gêne pour combattre", " des provisions", " certains soldats ennemis", " une partie de la citadelle", " les écuries", " ce qui nuit à la sécurité des travailleurs", " ce qui empêche le combat contre [villeAlea]", " les chevaux", " les combattants qui s'entrainent"]
+    #Pour humains //// voler : De 0 à 1 : Negatif / 2 : neutre // tuer : De 3 à 4 : négatif / 5 : positif // bruler : De 6 à 8 : négatif // perdu : 9 : négatif / 10 neutre // endormi : 11 : negatif / 12 : neutre / 13 : positif // Pour annimaux : 14 à 17 // Pour météo : 18 à 23 // longueur : 23 
 
     $ i = 0
     while i != 5:
+        $ villeAlea = listeVille[renpy.random.randint(0, 2)]
         $ persoAlea = listePerso[renpy.random.randint(0, 12)]
         if(persoAlea == "Un prêtre" or persoAlea == "Un chevalier" or persoAlea == "Le marquis" or persoAlea == "L'écuyer" or persoAlea == "Un paysant" or persoAlea == "La marquise" or persoAlea == "Le prince"):
             #Pour humains
@@ -106,11 +107,66 @@ label diplomatie:
                 $ contextAlea = ""
                 $ choix1 = "Faire une cérémonie pour célébrer cette victoire"
                 $ choix2 = "Demmander de repartir au combat"
-        # elif(persoAlea == "Un chien" or persoAlea == "Un cochon" or persoAlea == "Un cheval"):
-        #     #Annimaux
-        
-        # elif(persoAlea == "Les innondations" or persoAlea == "Les intempéries" or persoAlea == "Le vent"):
-        #     #Méteo
+        elif(persoAlea == "Un chien" or persoAlea == "Un cochon" or persoAlea == "Un cheval"):
+            #Annimaux
+            $ actionAlea = listeAction[renpy.random.randint(9, 11)]
+            if(actionAlea == "a sali"):
+                $ contextAlea = listeContextuelle[renpy.random.randint(14, 15)]
+                if(contextAlea == " les quartier royaux"):
+                    $ choix1 = "C'est une insulte envers le roi"
+                    $ choix2 = "Demander de nettoyer"
+                elif(contextAlea == " les équipement des soldats ce qui les gêne pour combattre"):
+                    $ choix1 = "Qu'ils continue à combattre"
+                    $ choix2 = "Déclarer la défaite de la battaille"
+
+            elif(actionAlea == "a dévoré"):
+                $ contextAlea = listeContextuelle[renpy.random.randint(16, 17)]
+                if(contextAlea == " des provisions"):
+                    $ choix1 = "Ce ne sont que quelques résereves"
+                    $ choix2 = "Allez en récolter d'autres"
+                elif(contextAlea == " certains soldats ennemis"):
+                    $ choix1 = "Féliciter cet annimal"
+                    $ choix2 = "Les annimaux ne sont pas des combattants"
+            
+            elif(actionAlea == "a grandement aidé pendant une bataille contre [villeAlea]"):
+                $ contextAlea = ""
+                $ choix1 = "Envoyer plus d'annimaux aux combats"
+                $ choix2 = "L'envoyer sur une autre bataille"
+
+        elif(persoAlea == "Les innondations" or persoAlea == "Les intempéries" or persoAlea == "Le vent"):
+            #Méteo
+            $ actionAlea = listeAction[renpy.random.randint(12, 15)]
+            if(actionAlea == "ont engloutis"):
+                $ contextAlea = listeContextuelle[renpy.random.randint(18, 19)]
+                if(contextAlea == " une partie de la citadelle"):
+                    $ choix1 = "Evacuer les citoyens"
+                    $ choix2 = "Ils peuvent bien se débrouiller tout seuls"
+                elif(contextAlea == " les écuries"):
+                    $ choix1 = "Les chevaux m'importe peu"
+                    $ choix2 = "Evacuer les chevaux"
+            
+            elif(actionAlea == "rendent le sol glissant"):
+                $ contextAlea = listeContextuelle[renpy.random.randint(20, 21)]
+                if(contextAlea == " ce qui nuit à la sécurité des travailleurs"):
+                    $ choix1 = "Mieux vaut assurer leur sécurité"
+                    $ choix2 = "Pas question de faire une pause"
+                elif(contextAlea == " ce qui empêche le combat contre [villeAlea]"):
+                    $ choix1 = "Laissez-les combattre"
+                    $ choix2 = "Battre en retraite"
+            
+            elif(actionAlea == "fait tomber des troncs d'abres sur"):
+                $ contextAlea = listeContextuelle[renpy.random.randint(22, 23)]
+                if(contextAlea == " les chevaux"):
+                    $ choix1 = "Nous n'avons pas besoin de chevaux"
+                    $ choix2 = "Mettez-les chevaux en sécurité"
+                elif(contextAlea == " les combattants qui s'entrainent"):
+                    $ choix1 = "Cessez leur entrainement"
+                    $ choix2 = "Ce sera d'autant plus formateur"
+
+            elif(actionAlea == "fait s'envoler [autrePersoAlea]"):
+                $ contextAlea = ""
+                $ choix1 = "Mettez tout le village à l'abri"
+                $ choix2 = "Que chacun continue son activité"
         
         else:
             #En cas d'erreur
@@ -118,20 +174,7 @@ label diplomatie:
             o "humm, ce n'est pas censé arriver, nom du perso choisi aléatoirement : [persoAlea]"
             o "Réessayez s'il vous plaît"
             jump choix
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
         menu:
             o "[persoAlea] [actionAlea][contextAlea]. Que décidez vous de faire ?"
             "[choix1]":
@@ -265,6 +308,97 @@ label diplomatie:
             elif(choixDuJoueur == "Faire une cérémonie pour célébrer cette victoire"):
                 $ messageSenateur = "Prenons du temps pour nous reposer et être plus entrainés pour les prochaines batailles, c'est une victoire bien mérité."
 
-            elif(choixDuJoueur = "Demmander de repartir au combat"):
+            elif(choixDuJoueur == "Demmander de repartir au combat"):
                 $ messageSenateur = "Pas de temps à perdre, que les soldats repartent au combat."
+        
+        elif(persoAlea == "Un chien" or persoAlea == "Un cochon" or persoAlea == "Un cheval"):
+            #Pour annimaux
+            #Pour salir
+            if(actionAlea == "a sali"):
+                if(choixDuJoueur == "C'est une insulte envers le roi"):
+                    $ messageSenateur = "Exectuer cet annimal, c'est une insulte envers le roi"
+                
+                elif(choixDuJoueur == "Demander de nettoyer"):
+                    $ messageSenateur = "Commencez par nettoyer, je demanderai l'avis du roi sur ce qu'on fait de cet annimal"
+                
+                elif(choixDuJoueur == "Qu'ils continue à combattre"):
+                    $ messageSenateur = "Que les soldats continue de combattre, leur prochain combat leur paraitra plus simple."
+                
+                elif(choixDuJoueur == "Déclarer la défaite de la battaille"):
+                    $ messageSenateur = "Il me semble plus important de déclarer une défaite que de perdre des hommes inutilement."
+            
+            #Pour dévorer
+            elif(actionAlea == "a dévoré"):
+                if(choixDuJoueur == "Ce ne sont que quelques résereves"):
+                    $ messageSenateur = "Ce n'est pas très grâve il nous reste de bons stocks de provision, ce n'était que quelques réserves."
+                
+                elif(choixDuJoueur == "Allez en récolter d'autres"):
+                    $ messageSenateur = "Condamnez-moi cet annimal et trouvez-en d'autres."
+                
+                elif(choixDuJoueur == "Féliciter cet annimal"):
+                    $ messageSenateur = "Félicitez moi cet annimal."
+
+                elif(choixDuJoueur == "Les annimaux ne sont pas des combattants"):
+                    $ messageSenateur = "Peu importe les annimaux ne sont pas des combattants."
+            
+            #Pour aider pendant un combat
+            elif(choixDuJoueur == "Envoyer plus d'annimaux sur les prochain combat"):
+                $ messageSenateur = "C'est une bonne stratégie pour les prochains comabts, nous enverrons plus d'annimaux la prochaine fois."
+            
+            elif(choixDuJoueur == "L'envoyer sur une autre bataille"):
+                $ messageSenateur = "Parfait, envoyez-le sur un autre champ de bataille pour qu'il puise faire de même."
+        
+        elif(persoAlea == "Les innondations" or persoAlea == "Les intempéries" or persoAlea == "Le vent"):
+            #Pour météo
+            #Pour engloutis
+            if(actionAlea == "ont engloutis"):
+                if (choixDuJoueur == "Evacuer les citoyens"):
+                    $ messageSenateur = "Prenons du temps pour évacuer les citoyens."
+
+                elif(choixDuJoueur == "Ils peuvent bien se débrouiller tout seuls"):
+                    $ messageSenateur = "Nous avons d'autres problèmes à gérer, ils peuvent bien règler ce problème d'innondations seuls."
+
+                elif(choixDuJoueur == "Les chevaux m'importe peu"):
+                    $ messageSenateur = "Les chevaux ont peu d'importance pour gagner les batailles."
+                
+                elif(choixDuJoueur == "Evacuer les chevaux"):
+                    $ messageSenateur = "Mettez les chevaux dans un endroi plus sûr."
+            
+            #Pour sol glissant
+            elif(actionAlea == "rendent le sol glissant"):
+                if (choixDuJoueur == "Mieux vaut assurer leur sécurité"):
+                    $ messageSenateur = "La sécurité des travailleurs est primordiale si l'on veut conquérir l'entièreté de cette île."
+
+                elif(choixDuJoueur == "Pas question de faire une pause"):
+                    $ messageSenateur = "Pas questions que les travailleurs fassent des heures en moins."
+                
+                elif(choixDuJoueur == "Laissez-les combattre"):
+                    $ messageSenateur = "Le temps peut être en notre avantage si il gêne les adversaires, laissez-les combattre."
+
+                elif(choixDuJoueur == "Battre en retraite"):
+                    $ messageSenateur = "Il serait préférable de battre en retraite pour éviter de perdre des hommes."
+            
+            #Pour troncs d'arbres
+            elif(actionAlea == "fait tomber des troncs d'abres sur"):
+                if (choixDuJoueur == "Nous n'avons pas besoin de chevaux"):
+                    $ messageSenateur = "Tant pis pour les chevaux, nous n'en avons pas vraiment besoin de toute façon."
+                
+                elif(choixDuJoueur == "Mettez-les chevaux en sécurité"):
+                    $ messageSenateur = "Les chevaux sont trop précieaux pour les batailles, mettez-les en sécurité."
+
+                elif(choixDuJoueur == "Cessez leur entrainement"):
+                    $ messageSenateur = "Mieux vaut les mettre en sécurité, cessez leur entrainement."
+                
+                elif(choixDuJoueur == "Ce sera d'autant plus formateur"):
+                    $ messageSenateur = "Ils seront mieux formés après, qu'ils continuent leur entrainement."
+            
+            #Envol de [persoAlea]
+            elif(choixDuJoueur == "Mettez tout le village à l'abri"):
+                $ messageSenateur = "Mieux vaut mettre tout le monde à l'abir le temps que la tempête se calme."
+
+            elif(choixDuJoueur == "Que chacun continue son activité"):
+                $ messageSenateur = "Que tout le monde reste à son poste, nous n'avons pas temps à perdre, je ne tolérerai pas une defaite."
+        else:
+            #En cas d'erreur
+            $ messageSenateur = "Humm, c'est une erreur... Réessayez s'il vous plaît"
         s "[messageSenateur]"
