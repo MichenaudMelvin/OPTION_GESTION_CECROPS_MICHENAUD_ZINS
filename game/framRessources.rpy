@@ -5,10 +5,10 @@ label framRessources:
             "Oui":
                 jump farm
             "Non":
-                jump jeu
+                jump choix
     else:
         o "Eumm... monsieur le sénateur, vos bucherons et mineurs sont épuisés, il serait préférable de les laisser se reposer quelques temps."
-        jump jeu
+        jump choix
 
 label farm:
     python:
@@ -61,4 +61,4 @@ label farm:
         yalign 0.1
     s "On a recoltés [aleatoireBois] bois et [aleatoirePierre] pierre"
     s "Ce qui fait un total de [joueur.getRessourceBois] bois et [joueur.getRessourcePierre] pierre"
-    return
+    jump choix

@@ -402,3 +402,4 @@ label diplomatie:
             #En cas d'erreur
             $ messageSenateur = "Humm, c'est une erreur... Réessayez s'il vous plaît"
         s "[messageSenateur]"
+    jump choix

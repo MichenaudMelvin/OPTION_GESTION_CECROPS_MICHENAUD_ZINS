@@ -31,7 +31,7 @@ label conquete:
             $ joueur.possibiliteFarm(True)
             $ joueur.avanceJeu()
         "Non":
-            jump jeu
+            jump choix
     
     s "et paf"
-    jump strategieMap
+    jump choix

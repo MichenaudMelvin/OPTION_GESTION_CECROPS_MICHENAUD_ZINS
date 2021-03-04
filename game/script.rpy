@@ -2,12 +2,12 @@
 define o = Character("OtherRandomCharacter")
 define personne = Character("")
 
-#Menu qui permet de choisir les différentes actions possibles du jeu // repris du tuto renpy
 init python:
     choix = []
+    #Menu qui permet de choisir les différentes actions possibles du jeu // repris du tuto renpy
     class Titre(object):
         def __init__(self, title):
-            self.kind = "section"
+            self.kind = "titre"
             self.title = title
 
             choix.append(self)
@@ -29,152 +29,8 @@ init python:
                 self.move_after = False
 
             choix.append(self)
-
-    Titre(_("Que faire ?"))
-
-    Menu("strategieMap", _("Attaquer"))
-    Menu("notDefindedYet", _("Construire"))
-    Menu("framRessources", _("Récolter"))
-    Menu("diplomatie", _("Régler les conflits internes"))
-
-default menu_adjustment = ui.adjustment()
-
-screen menuChoix(adj):
-    frame:
-        xsize 640
-        xalign .5
-        ysize 485
-        ypos 30
-        has side "c r b"
-        viewport:
-            yadjustment adj
-            mousewheel False
-            vbox:
-                for i in choix:
-                    if i.kind == "choix":
-                        textbutton i.title:
-                            action Return(i)
-                            left_padding 20
-                            xfill True
-                    else:
-                        null height 10
-                        text i.title alt ""
-                        null height 5
-        bar adjustment adj style "vscrollbar"
-        textbutton _("Faire autre chose"):
-            xfill True
-            action Return(False)
-            top_margin 10
-
-label start:
-    #ici definition de variable et des choses qui changeront pas trop
-    $ joueur = VillageJoueur("Lunaris", 200, 200, 100, 0, True, True)
-    python:
-        nouveauNomVillage = renpy.input("Entrez le nom de votre village (10 caractères max) : ", length=10)
-        if not nouveauNomVillage:
-            nouveauNomVillage = "Lunaris"
-    menu:
-        personne 'Le nom de votre village sera "[nouveauNomVillage]", ça vous va ?'
-        "C'est parfait !":
-            $ joueur.renommer(nouveauNomVillage)
-        "Changer de nom":
-            jump start
     
-    $ king = renpy.random.randint(1, 3) #definition aléatoire de la cité maitre de l'île 1 = islesbury / 2 = redwater / 3 = swanford
-    if(king == 1):
-        #mettre valeurs aléatoire pour chaque truc
-        $ islesbury = VillageEnnemi("islesbury", 200, 200, 100, True, False)
-        $ redwater = VillageEnnemi("redwater", 200, 200, 100, False, False)
-        $ swanford = VillageEnnemi("swanford", 200, 200, 100, False, False)
-    elif(king == 2):
-        $ islesbury = VillageEnnemi("islesbury", 200, 200, 100, False, False)
-        $ redwater = VillageEnnemi("redwater", 200, 200, 100, True, False)
-        $ swanford = VillageEnnemi("swanford", 200, 200, 100, False, False)
-    elif(king == 3):
-        $ islesbury = VillageEnnemi("islesbury", 200, 200, 100, False, False)
-        $ redwater = VillageEnnemi("redwater", 200, 200, 100, False, False)
-        $ swanford = VillageEnnemi("swanford", 200, 200, 100, True, False)
-    
-    scene villageDuScenateur
-    show ressourcebois:
-        xalign 0.005
-        yalign 0.02
-    show ressourcepierre:
-        xalign 0.02
-        yalign 0.25
-    #les icones sont trop grandes
-    #{outlinecolor=#000000}{/outlinecolor}
-
-    show text "[joueur.getRessourceBois]\n\n\n\n\n[joueur.getRessourcePierre]\n\n\n\n\n[joueur.getRessourceHumain]":
-        xalign 0.14
-        yalign 0.1
-    jump jeu
-
-label jeu:
-    scene bg room
-    show senateur:
-        xalign 0.5
-        yalign 1.0
-    s "Pensez à ne pas coder sur la branche 'main' et a coder en pull request"
-    s "Pour cela, allez sur github desktop --> curent branch --> new branch et nommer votre branch"
-    s "On s'occupera de merge les branch plus tard"
-    s "Dans vos pull request évitez aussi d'envoyer vos 'errors.txt' et 'traceback.txt'"
-    s "Pour ce qui est de l'interface, en gros ça serait comme ça, avec le menu + map en haut à gauche"
-    show senateur at right
-    with move
-    s "Avec moi à droite"
-    jump choix
-
-label choix:
-    $ renpy.choice_for_skipping()
-    call screen menuChoix(adj=menu_adjustment)
-    $ tutorial = _return
-    if not tutorial:
-        jump end
-    
-    call expression tutorial.label from _call_expression
-    jump choix
-
-label end:
-    s "Je sias pas encore si ce boutton va servir"
-    return
-
-    s "Ou l'inverse, le sénateur à droite et le menu + map en haut à droite"
-    menu:
-        s "Tu veux que je te montre la map ?"
-        "Oui":
-            hide senateur
-            jump strategieMap
-        "Non":
-            s "Ok"
-    
-    menu:
-        s "Tu voudrais plutot voir le fram de ressources alors ?"
-        "Oui":
-            jump framRessources
-        "Non":
-            s "Ok, a bientot alors"
-    return
-
-#Pour la world map
-screen conquete_map():
-    imagemap:
-        idle "map"
-        hover "maphovered"
-
-        hotspot (587, 150, 100, 63) action Jump("islesbury")
-        hotspot (813, 209, 100, 63) action Jump("redwater")
-        hotspot (818, 411, 99, 64) action Jump("swanford")
-        hotspot (329, 456, 99, 63) action Jump("ourBase")
-        if(islesbury.getKing() == True):
-            add "king.png" xalign 0.496 yalign 0.14
-        elif(redwater.getKing() == True):
-            add "king.png" xalign 0.683 yalign 0.231
-        elif(swanford.getKing() == True):
-            add "king.png" xalign 0.687 yalign 0.52
-
-#Pour chaque village
-init python:
+    #Pour chaque village
     class Village():
         def __init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain):
             self.__nomVillage = nomVillage #str / nom du village
@@ -250,3 +106,131 @@ init python:
         
         def getKing(self):
             return self.__king
+
+    Titre(_("Que faire ?"))
+
+    Menu("strategieMap", _("Attaquer"))
+    Menu("notDefindedYet", _("Construire"))
+    Menu("framRessources", _("Récolter"))
+    Menu("diplomatie", _("Régler les conflits internes"))
+
+default menu_adjustment = ui.adjustment()
+
+screen menuChoix(adj):
+    frame:
+        xsize 640
+        xalign .5
+        ysize 485
+        ypos 30
+        has side "c r b"
+        viewport:
+            yadjustment adj
+            mousewheel False
+            vbox:
+                for i in choix:
+                    if i.kind == "choix":
+                        textbutton i.title:
+                            action Return(i)
+                            left_padding 20
+                            xfill True
+                    else:
+                        null height 10
+                        text i.title alt ""
+                        null height 5
+        bar adjustment adj style "vscrollbar"
+        textbutton _("Faire autre chose"):
+            xfill True
+            action Return(False)
+            top_margin 10
+
+#Pour la world map
+screen conquete_map():
+    imagemap:
+        idle "map"
+        hover "maphovered"
+
+        hotspot (587, 150, 100, 63) action Jump("islesbury")
+        hotspot (813, 209, 100, 63) action Jump("redwater")
+        hotspot (818, 411, 99, 64) action Jump("swanford")
+        hotspot (329, 456, 99, 63) action Jump("ourBase")
+        #afficher aussi quand les villages sont détruits
+        if(islesbury.getKing() == True):
+            add "king.png" xalign 0.496 yalign 0.14
+        elif(redwater.getKing() == True):
+            add "king.png" xalign 0.683 yalign 0.231
+        elif(swanford.getKing() == True):
+            add "king.png" xalign 0.687 yalign 0.52
+
+label start:
+    #ici definition de variable et des choses qui changeront pas trop
+    $ joueur = VillageJoueur("Lunaris", 200, 200, 100, 0, True, True)
+    python:
+        nouveauNomVillage = renpy.input("Entrez le nom de votre village (10 caractères max) : ", length=10)
+        if not nouveauNomVillage:
+            nouveauNomVillage = "Lunaris"
+    menu:
+        personne 'Le nom de votre village sera "[nouveauNomVillage]", ça vous va ?'
+        "C'est parfait !":
+            $ joueur.renommer(nouveauNomVillage)
+        "Changer de nom":
+            jump start
+    
+    $ king = renpy.random.randint(1, 3) #definition aléatoire de la cité maitre de l'île 1 = islesbury / 2 = redwater / 3 = swanford
+    if(king == 1):
+        #mettre valeurs aléatoire pour chaque truc
+        $ islesbury = VillageEnnemi("islesbury", 200, 200, 100, True, False)
+        $ redwater = VillageEnnemi("redwater", 200, 200, 100, False, False)
+        $ swanford = VillageEnnemi("swanford", 200, 200, 100, False, False)
+    elif(king == 2):
+        $ islesbury = VillageEnnemi("islesbury", 200, 200, 100, False, False)
+        $ redwater = VillageEnnemi("redwater", 200, 200, 100, True, False)
+        $ swanford = VillageEnnemi("swanford", 200, 200, 100, False, False)
+    elif(king == 3):
+        $ islesbury = VillageEnnemi("islesbury", 200, 200, 100, False, False)
+        $ redwater = VillageEnnemi("redwater", 200, 200, 100, False, False)
+        $ swanford = VillageEnnemi("swanford", 200, 200, 100, True, False)
+    
+    scene villageDuScenateur
+    
+    show senateur:
+        xalign 0.5
+        yalign 1.0
+    
+    show ressourcebois:
+        xalign 0.005
+        yalign 0.02
+    show ressourcepierre:
+        xalign 0.02
+        yalign 0.25
+    show text "[joueur.getRessourceBois]\n\n\n\n\n[joueur.getRessourcePierre]\n\n\n\n\n[joueur.getRessourceHumain]":
+        xalign 0.14
+        yalign 0.1
+    
+    #les icones sont trop grandes
+    #{outlinecolor=#000000}{/outlinecolor}
+
+    s "Pensez à ne pas coder sur la branche 'main' et a coder en pull request"
+    s "Pour cela, allez sur github desktop --> curent branch --> new branch et nommer votre branch"
+    s "Pour ce qui est de l'interface, en gros ça serait comme ça, avec le menu + map en haut à gauche"
+    show senateur at right
+    with move
+    s "Avec moi à droite"
+    jump choix
+
+label choix:
+    $ renpy.choice_for_skipping()
+    call screen menuChoix(adj=menu_adjustment)
+    $ tutorial = _return
+    if not tutorial:
+        jump end
+    
+    call expression tutorial.label from _call_expression
+    jump choix
+
+label notDefindedYet:
+    s "pas encore défini"
+    jump choix
+
+label end:
+    s "Je sias pas encore si ce boutton va servir"
+    return
