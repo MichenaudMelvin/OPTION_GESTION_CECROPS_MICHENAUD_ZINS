@@ -2,15 +2,15 @@ label strategieMap:
     call screen conquete_map
 
 label islesbury:
-    $ islesbury.choixVillage(True)
+    $ villageChoisi = islesbury
     jump conquete
 
 label redwater:
-    $ redwater.choixVillage(True)
+    $ villageChoisi = redwater
     jump conquete
 
 label swanford:
-    $ swanford.choixVillage(True)
+    $ villageChoisi = swanford
     jump conquete
 
 label ourBase:
@@ -18,22 +18,20 @@ label ourBase:
     jump strategieMap
 
 label conquete:
-    $ joueur.possibiliteFarm(True)
-    s "Bien, attaquons [villageChoisi] !"
-    o "Pour rappel [villageChoisi] : est composé de x hommes"
-    #il faudrait mieux faires des classes pour chaque ville
-    if(islesbury.getKing == True and islesbury.getVillageChoisi == True and joueur.getDebutJeu == True):
-        o "Woah, vous voulez déjà vous attaquer à [villageChoisi] ?! Je vous rappele que c'est la plus grande puissance de l'île !"
-    elif(redwater.getKing == True and redwater.getVillageChoisi == True and joueur.getDebutJeu == True):
-        o "Woah, vous voulez déjà vous attaquer à [villageChoisi] ?! Je vous rappele que c'est la plus grande puissance de l'île !"
-    elif(swanford.getKing == True and swanford.getVillageChoisi == True and joueur.getDebutJeu == True):
-        o "Woah, vous voulez déjà vous attaquer à [villageChoisi] ?! Je vous rappele que c'est la plus grande puissance de l'île !"
+    s "Bien, attaquons [villageChoisi.getNomVillage] !"
+    if(villageChoisi.getKing() == True and joueur.getDebutJeu() == True):
+        o "Woah, vous voulez déjà vous attaquer à [villageChoisi.getNomVillage] ?! Je vous rappele que c'est la plus grande puissance de l'île !"
+    
+    o "Pour rappel [villageChoisi.getNomVillage] : est composé de [villageChoisi.getRessourceHumain] hommes"
     
     menu:
-        o "Voulez-vous toujours attaquer [villageChoisi] ?"
+        o "Voulez-vous toujours attaquer [villageChoisi.getNomVillage] ?"
         "Oui":
             s "Oui, allons-y !"
+            $ joueur.possibiliteFarm(True)
+            $ joueur.avanceJeu()
         "Non":
             jump jeu
     
     s "et paf"
+    jump strategieMap

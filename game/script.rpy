@@ -2,10 +2,6 @@
 define o = Character("OtherRandomCharacter")
 define personne = Character("")
 
-#pour gestion diplomatie :
-#faire un générateur de situation ex : "un chien a accidentellement brulé l'écurie" / "un prince a mangé toutes les pommes"
-#regarder comme reign fonctionne
-
 label start:
     #ici definition de variable et des choses qui changeront pas trop
     $ joueur = VillageJoueur("Lunaris", 200, 200, 100, 0, True, True)
@@ -23,17 +19,17 @@ label start:
     $ king = renpy.random.randint(1, 3) #definition aléatoire de la cité maitre de l'île 1 = islesbury / 2 = redwater / 3 = swanford
     if(king == 1):
         #mettre valeurs aléatoire pour chaque truc
-        $ islesbur = Village("islesbur", 200, 200, 100, True, False)
-        $ redwater = Village("redwater", 200, 200, 100, False, False)
-        $ swanford = Village("swanford", 200, 200, 100, False, False)
+        $ islesbury = VillageEnnemi("islesbury", 200, 200, 100, True, False)
+        $ redwater = VillageEnnemi("redwater", 200, 200, 100, False, False)
+        $ swanford = VillageEnnemi("swanford", 200, 200, 100, False, False)
     elif(king == 2):
-        $ islesbur = Village("islesbur", 200, 200, 100, False, False)
-        $ redwater = Village("redwater", 200, 200, 100, True, False)
-        $ swanford = Village("swanford", 200, 200, 100, False, False)
+        $ islesbury = VillageEnnemi("islesbury", 200, 200, 100, False, False)
+        $ redwater = VillageEnnemi("redwater", 200, 200, 100, True, False)
+        $ swanford = VillageEnnemi("swanford", 200, 200, 100, False, False)
     elif(king == 3):
-        $ islesbur = Village("islesbur", 200, 200, 100, False, False)
-        $ redwater = Village("redwater", 200, 200, 100, False, False)
-        $ swanford = Village("swanford", 200, 200, 100, True, False)
+        $ islesbury = VillageEnnemi("islesbury", 200, 200, 100, False, False)
+        $ redwater = VillageEnnemi("redwater", 200, 200, 100, False, False)
+        $ swanford = VillageEnnemi("swanford", 200, 200, 100, True, False)
     
     scene villageDuScenateur
     show ressourcebois:
@@ -45,7 +41,6 @@ label start:
     #les icones sont trop grandes
     #{outlinecolor=#000000}{/outlinecolor}
 
-    #currently not working
     show text "[joueur.getRessourceBois]\n\n\n\n\n[joueur.getRessourcePierre]\n\n\n\n\n[joueur.getRessourceHumain]":
         xalign 0.14
         yalign 0.1
@@ -55,7 +50,7 @@ label jeu:
         xalign 0.5
         yalign 1.0
     
-    s "Pensez à ne pas coder sur la branche 'main' et a coder en pull request [joueur.getRessourceBois]"
+    s "Pensez à ne pas coder sur la branche 'main' et a coder en pull request"
 
     s "Pour cela, allez sur github desktop --> curent branch --> new branch et nommer votre branch"
 
@@ -99,14 +94,11 @@ screen conquete_map():
         hotspot (813, 209, 100, 63) action Jump("redwater")
         hotspot (818, 411, 99, 64) action Jump("swanford")
         hotspot (329, 456, 99, 63) action Jump("ourBase")
-        if(islesbury.getKing == True):
-            #islesbury
+        if(islesbury.getKing() == True):
             add "king.png" xalign 0.496 yalign 0.14
-        elif(redwater.getKing == True):
-            #redwater
+        elif(redwater.getKing() == True):
             add "king.png" xalign 0.683 yalign 0.231
-        elif(swanford.getKing == True):
-            #swanford
+        elif(swanford.getKing() == True):
             add "king.png" xalign 0.687 yalign 0.52
 
 #Pour chaque village
@@ -118,18 +110,27 @@ init python:
             self.__ressourcePierre = ressourcePierre #int / ressources en pierre du village
             self.__ressourceHumain = ressourceHumain #int / ressources humaines du village
         
+        #property pour ne pas mettre "()" après la méthode // permet l'affichage dans les dialogues
         @property
         def getNomVillage(self):
             return self.__nomVillage
+        
+        @property
         def getRessourceBois(self):
             return self.__ressourceBois
+        
+        @property
         def getRessourcePierre(self):
             return self.__ressourcePierre
+       
+        @property
         def getRessourceHumain(self):
             return self.__ressourceHumain
+        
         def renommer(self, nouveauNom):
             self.__nomVillage = nouveauNom
-
+    
+    #classe hérité de village
     class VillageJoueur(Village):
         def __init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain, humainEpuises, possibiliteFarm, debutJeu):
             Village.__init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain)
@@ -144,13 +145,28 @@ init python:
         @property
         def getHumainEpuises(self):
             return self.__humainEpuises
+        
         def getPossibiliteFarm(self):
             return self.__possibiliteFarm
+        
         def getDebutJeu(self):
             return self.__debutJeu
+        
+        def humainEpuises(self, nombreHumainsEnvoyes):
+            self.__ressourceHumain = self.__ressourceHumain - nombreHumainsEnvoyes
+            self.__humainEpuises = self.__humainEpuises + nombreHumainsEnvoyes
+        
+        def addRessources(self, bois, pierre):
+            self.__ressourceBois = self.__ressourceBois + bois
+            self.__ressourcePierre = self.__ressourcePierre + pierre
+        
         def possibiliteFarm(self, bool):
-            self.__possibiliteFarm == bool
-
+            self.__possibiliteFarm = bool
+        
+        def avanceJeu(self):
+            self.__debutJeu = False
+    
+    #classe hérité de village
     class VillageEnnemi(Village):
         def __init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain, king, villageChoisi):
             Village.__init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain)
@@ -159,12 +175,6 @@ init python:
             self.__ressourcePierre = ressourcePierre #int / ressources en pierre du village
             self.__ressourceHumain = ressourceHumain #int / ressources humaines du villag
             self.__king = king #bool / si le village est maitre de l'île / immpossible pour le village du joueur
-            self.__villageChoisi = villageChoisi #bool / avant une attaque, pour savoir quel village est selectionné
         
-        @property
         def getKing(self):
             return self.__king
-        def getVillageChoisi(self):
-            return self.__villageChoisi
-        def choixVillage(self, bool):
-            self.__villageChoisi == bool
