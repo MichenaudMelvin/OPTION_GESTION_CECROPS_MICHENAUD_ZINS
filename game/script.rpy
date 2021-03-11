@@ -55,6 +55,11 @@ init python:
         def getRessourceHumain(self):
             return self.__ressourceHumain
         
+        def addRessources(self, bois, pierre, humain):
+            self.__ressourceBois = self.__ressourceBois + bois
+            self.__ressourcePierre = self.__ressourcePierre + pierre
+            self.__ressourceHumain = self.__ressourceHumain + humain
+
         def renommer(self, nouveauNom):
             self.__nomVillage = nouveauNom
     
@@ -84,10 +89,6 @@ init python:
             self.__ressourceHumain = self.__ressourceHumain - nombreHumainsEnvoyes
             self.__humainEpuises = self.__humainEpuises + nombreHumainsEnvoyes
         
-        def addRessources(self, bois, pierre):
-            self.__ressourceBois = self.__ressourceBois + bois
-            self.__ressourcePierre = self.__ressourcePierre + pierre
-        
         def possibiliteFarm(self, bool):
             self.__possibiliteFarm = bool
         
@@ -96,16 +97,23 @@ init python:
     
     #classe hérité de village
     class VillageEnnemi(Village):
-        def __init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain, king, villageChoisi):
+        def __init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain, king, villageChoisi, defeatVillage):
             Village.__init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain)
             self.__nomVillage = nomVillage #str / nom du village
             self.__ressourceBois = ressourceBois #int / ressources en bois du village
             self.__ressourcePierre = ressourcePierre #int / ressources en pierre du village
             self.__ressourceHumain = ressourceHumain #int / ressources humaines du villag
-            self.__king = king #bool / si le village est maitre de l'île / immpossible pour le village du joueur
+            self.__king = king #bool / si le village est maitre de l'île
+            self.__defeatVillage = defeatVillage #bool / si le village a deja été vaincu par le joueur / default = False
         
         def getKing(self):
             return self.__king
+
+        def getDefeatVillage(self):
+            return self.__defeatVillage
+
+        def defeatVillage(self, bool):
+            self.__defeatVillage = bool
 
     Titre(_("Que faire ?"))
 
@@ -177,20 +185,20 @@ label start:
     
     $ king = renpy.random.randint(1, 3) #definition aléatoire de la cité maitre de l'île 1 = islesbury / 2 = redwater / 3 = swanford
     if(king == 1):
-        #mettre valeurs aléatoire pour chaque truc
-        $ islesbury = VillageEnnemi("islesbury", 200, 200, 100, True, False)
-        $ redwater = VillageEnnemi("redwater", 200, 200, 100, False, False)
-        $ swanford = VillageEnnemi("swanford", 200, 200, 100, False, False)
+        #les valeurs aleatoires sont ptet trop élevés
+        $ islesbury = VillageEnnemi("islesbury", renpy.random.randint(500, 700), renpy.random.randint(500, 700), renpy.random.randint(500, 700), True, False, False)
+        $ redwater = VillageEnnemi("redwater", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False)
+        $ swanford = VillageEnnemi("swanford", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False)
     elif(king == 2):
-        $ islesbury = VillageEnnemi("islesbury", 200, 200, 100, False, False)
-        $ redwater = VillageEnnemi("redwater", 200, 200, 100, True, False)
-        $ swanford = VillageEnnemi("swanford", 200, 200, 100, False, False)
+        $ islesbury = VillageEnnemi("islesbury", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False)
+        $ redwater = VillageEnnemi("redwater", renpy.random.randint(500, 700), renpy.random.randint(500, 700), renpy.random.randint(500, 700), True, False, False)
+        $ swanford = VillageEnnemi("swanford", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False)
     elif(king == 3):
-        $ islesbury = VillageEnnemi("islesbury", 200, 200, 100, False, False)
-        $ redwater = VillageEnnemi("redwater", 200, 200, 100, False, False)
-        $ swanford = VillageEnnemi("swanford", 200, 200, 100, True, False)
+        $ islesbury = VillageEnnemi("islesbury", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False)
+        $ redwater = VillageEnnemi("redwater", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False)
+        $ swanford = VillageEnnemi("swanford", renpy.random.randint(500, 700), renpy.random.randint(500, 700), renpy.random.randint(500, 700), True, False, False)
     
-    scene villageDuScenateur
+    scene villageDuSenateur
     
     show senateur:
         xalign 0.5
@@ -202,7 +210,8 @@ label start:
     show ressourcepierre:
         xalign 0.02
         yalign 0.25
-    show text "[joueur.getRessourceBois]\n\n\n\n\n[joueur.getRessourcePierre]\n\n\n\n\n[joueur.getRessourceHumain]":
+    #permet d'afficher les ressources, doit le refaire à chaque fois que les valeurs changes pour réactualliser les chiffres
+    show text "[joueur.getRessourceBois]\n\n\n\n\n[joueur.getRessourcePierre]\n\n\n\n\n[joueur.getRessourceHumain]\n\n\n\n[joueur.getHumainEpuises]":
         xalign 0.14
         yalign 0.1
     
@@ -233,4 +242,9 @@ label notDefindedYet:
 
 label end:
     s "Je sias pas encore si ce boutton va servir"
+    return
+
+label victory:
+    $ not tutorial
+    s "wow, we won"
     return

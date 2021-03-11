@@ -12,7 +12,9 @@ label framRessources:
 
 label farm:
     python:
-        humainEnvoyes = renpy.input("Bien, entrez le nombre d'Hommes que vous voulez envoyer : ", length=3)
+        humainEnvoyes = renpy.input("Bien, entrez le nombre d'hommes que vous voulez envoyer : ", length=3)
+        #if(humainEnvoyes != int):
+        #    humainEnvoyes = 0
         if not humainEnvoyes:
             humainEnvoyes = 0
         humainEnvoyes = int(humainEnvoyes)
@@ -21,6 +23,7 @@ label farm:
 
     if(joueur.getHumainEpuises > joueur.getRessourceHumain):
         o "Vous n'avez pas assez d'Hommes pour tout récolez, veuillez réduire vos ambitions."
+        $ joueur.humainEpuises(-humainEnvoyes)
         jump farm
     elif(joueur.getHumainEpuises == 0):
         o "Humm... vous n'avez envoyé personne..."
@@ -52,13 +55,14 @@ label farm:
 
     $ joueur.possibiliteFarm(False)
 
-    $ joueur.addRessources(aleatoireBois, aleatoirePierre)
+    $ joueur.addRessources(aleatoireBois, aleatoirePierre, 0)
     pause 2
     s "Et voila c'est fini"
     hide text
-    show text "[joueur.getRessourceBois]\n\n\n\n\n[joueur.getRessourcePierre]\n\n\n\n\n[joueur.getRessourceHumain]":
+    show text "[joueur.getRessourceBois]\n\n\n\n\n[joueur.getRessourcePierre]\n\n\n\n\n[joueur.getRessourceHumain]\n\n\n\n[joueur.getHumainEpuises]":
         xalign 0.14
         yalign 0.1
     s "On a recoltés [aleatoireBois] bois et [aleatoirePierre] pierre"
-    s "Ce qui fait un total de [joueur.getRessourceBois] bois et [joueur.getRessourcePierre] pierre"
+    s "Ce qui fait un total de [joueur.getRessourceBois] bois et [joueur.getRessourcePierre] pierre."
+    s "[joueur.getHumainEpuises] hommes on besoin de se reposer."
     jump choix
