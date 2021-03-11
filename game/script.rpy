@@ -3,6 +3,7 @@ define o = Character("OtherRandomCharacter")
 define personne = Character("")
 
 init python:
+    import re
     choix = []
     #Menu qui permet de choisir les différentes actions possibles du jeu // repris du tuto renpy
     class Titre(object):

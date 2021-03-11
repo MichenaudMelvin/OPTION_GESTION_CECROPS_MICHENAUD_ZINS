@@ -13,8 +13,7 @@ label framRessources:
 label farm:
     python:
         humainEnvoyes = renpy.input("Bien, entrez le nombre d'hommes que vous voulez envoyer : ", length=3)
-        #if(humainEnvoyes != int):
-        #    humainEnvoyes = 0
+        #besoin des expressions régulières / rationnelles pour éviter une erreur. see : https://www.w3schools.com/jsref/jsref_regexp_not_0-9.asp
         if not humainEnvoyes:
             humainEnvoyes = 0
         humainEnvoyes = int(humainEnvoyes)

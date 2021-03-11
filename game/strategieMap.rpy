@@ -47,15 +47,14 @@ label conquete:
 label combat:
     python:
         humainEnvoyes = renpy.input("Bien, entrez le nombre d'hommes que vous voulez envoyer au combat : ", length=3)
-        #if(humainEnvoyes != int):
-        #    humainEnvoyes = 0
+        #besoin des expressions régulières / rationnelles pour éviter une erreur. see : https://www.w3schools.com/jsref/jsref_regexp_not_0-9.asp
         if not humainEnvoyes:
             humainEnvoyes = 0
         humainEnvoyes = int(humainEnvoyes)
     
     $ joueur.humainEpuises(humainEnvoyes)
     if(joueur.getHumainEpuises > joueur.getRessourceHumain):
-        o "Vous n'avez pas assez d'Hommes pour tout récolez, veuillez réduire vos ambitions. [joueur.getHumainEpuises]"
+        o "Vous n'avez pas assez d'Hommes pour combatre, veuillez réduire vos ambitions. [joueur.getHumainEpuises], [joueur.getRessourceHumain]"
         $ joueur.humainEpuises(-humainEnvoyes)
         jump combat
     elif(joueur.getHumainEpuises == 0):
@@ -83,8 +82,6 @@ label combat:
         xalign 0.14
         yalign 0.1
     
-    
-    #villageChoisi
     $ joueur.possibiliteFarm(True)
     $ joueur.avanceJeu()
     jump choix
