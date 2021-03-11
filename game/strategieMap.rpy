@@ -48,19 +48,27 @@ label combat:
     python:
         humainEnvoyes = renpy.input("Bien, entrez le nombre d'hommes que vous voulez envoyer au combat : ", length=3)
         #besoin des expressions régulières / rationnelles pour éviter une erreur. see : https://www.w3schools.com/jsref/jsref_regexp_not_0-9.asp
+        #https://www.youtube.com/watch?v=ev0oVuN_hkA
+        #https://www.kite.com/python/answers/how-to-convert-a-list-of-integers-into-a-single-integer-in-python#
         if not humainEnvoyes:
             humainEnvoyes = 0
-        humainEnvoyes = int(humainEnvoyes)
-    
-    $ joueur.humainEpuises(humainEnvoyes)
+        #not working
+        # import re
+        # conversion = re.findall("([0-9]+)", humainEnvoyes)
+        # conversionStr = [str(integer) for interger in conversion]
+        # a_string = "".join(conversionStr)
+        # resultat = int(a_string)
+
+    $ joueur.humainEpuises(resultat)
     if(joueur.getHumainEpuises > joueur.getRessourceHumain):
         o "Vous n'avez pas assez d'Hommes pour combatre, veuillez réduire vos ambitions. [joueur.getHumainEpuises], [joueur.getRessourceHumain]"
-        $ joueur.humainEpuises(-humainEnvoyes)
+        $ joueur.humainEpuises(-resultat)
         jump combat
     elif(joueur.getHumainEpuises == 0):
         o "Humm... vous n'avez envoyé personne..."
         jump combat
-    
+    s "[conversionStr]"
+
     $ villageChoisi.defeatVillage(True)
     if(villageChoisi.getDefeatVillage() == True and villageChoisi.getKing() == True):
         jump victory
