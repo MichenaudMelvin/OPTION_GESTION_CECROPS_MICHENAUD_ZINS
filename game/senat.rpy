@@ -57,11 +57,12 @@ screen menuSenat(adj):
             action Return(False)
             top_margin 10
 
+#valeur à revoir
 label ameliorerSenat:
-    if niveauSenat < 3:
-        $ niveauSenat += 1
-        $ cout = -10 * niveauSenat
+    if senat.getNiveau < 3:
+        $ senat.niveauSup()
+        $ cout = -10 * senat.getNiveau
         $ joueur.addRessources(cout, cout)
-        "Votre sénat est maintenant niveau [niveauSenat]."
+        o "Votre sénat est maintenant niveau [senat.getNiveau]."
     else:
-        "Vous ne pouvez plus améliorer votre sénat."
+        o "Vous ne pouvez plus améliorer votre sénat."

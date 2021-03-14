@@ -106,7 +106,23 @@ init python:
         
         def getKing(self):
             return self.__king
+    
+    class Batiment():
+        def __init__(self, type, niveau):
+            self.__type = type #str / type du batiment (caserne, mine, senat)
+            self.__niveau = niveau #int / niveau du batiment, max = 3, debut = 1
+        
+        @property
+        def getType(self):
+            return self.__type
+        
+        @property
+        def getNiveau(self):
+            return self.__niveau
 
+        def niveauSup(self):
+            self.__niveau = self.__niveau + 1
+    
     Titre(_("Que faire ?"))
 
     Menu("strategieMap", _("Attaquer"))
@@ -190,6 +206,11 @@ label start:
         $ redwater = VillageEnnemi("redwater", 200, 200, 100, False, False)
         $ swanford = VillageEnnemi("swanford", 200, 200, 100, True, False)
     
+    #creation des batiments
+    $ caserne = Batiment("caserne", 1)
+    $ mine = Batiment("mine", 1)
+    $ senat = Batiment("senat", 1)
+
     scene villageDuScenateur
     
     show senateur:

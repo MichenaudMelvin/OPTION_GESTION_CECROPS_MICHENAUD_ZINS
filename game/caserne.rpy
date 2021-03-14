@@ -58,10 +58,10 @@ screen menuCaserne(adj):
             top_margin 10
 
 label ameliorerCaserne:
-    if niveauCaserne < 3:
-        $ niveauCaserne += 1
-        $ cout = -10 * niveauCaserne
+    if caserne.getNiveau < 3:
+        $ caserne.getNiveau()
+        $ cout = -10 * caserne.getNiveau
         $ joueur.addRessources(cout, cout)
-        "Votre caserne est maintenant niveau [niveauCaserne]."
+        o "Votre caserne est maintenant niveau [caserne.getNiveau]."
     else:
-        "Vous ne pouvez plus améliorer votre caserne."
+        o "Vous ne pouvez plus améliorer votre caserne."

@@ -58,10 +58,10 @@ screen menuMine(adj):
             top_margin 10
 
 label ameliorerMine:
-    if niveauMine < 3:
-        $ niveauMine += 1
-        $ cout = -10 * niveauMine
+    if mine.getNiveau < 3:
+        $ mine.niveauSup()
+        $ cout = -10 * mine.getNiveau
         $ joueur.addRessources(cout, cout)
-        "Votre mine est maintenant niveau [niveauMine]."
+        o "Votre mine est maintenant niveau [mine.getNiveau]."
     else:
-        "Vous ne pouvez plus améliorer votre mine."
+        o "Vous ne pouvez plus améliorer votre mine."
