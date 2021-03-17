@@ -4,6 +4,7 @@ define personne = Character("")
 
 init python:
     import re
+    import random
     choix = []
     #Menu qui permet de choisir les différentes actions possibles du jeu // repris du tuto renpy
     class Titre(object):
@@ -98,7 +99,7 @@ init python:
     
     #classe hérité de village
     class VillageEnnemi(Village):
-        def __init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain, king, villageChoisi, defeatVillage):
+        def __init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain, king, villageChoisi, defeatVillage, humainEnvoyesParVillegaeEnnemi):
             Village.__init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain)
             self.__nomVillage = nomVillage #str / nom du village
             self.__ressourceBois = ressourceBois #int / ressources en bois du village
@@ -106,6 +107,7 @@ init python:
             self.__ressourceHumain = ressourceHumain #int / ressources humaines du villag
             self.__king = king #bool / si le village est maitre de l'île
             self.__defeatVillage = defeatVillage #bool / si le village a deja été vaincu par le joueur / default = False
+            self.__humainEnvoyesParVillegaeEnnemi = humainEnvoyesParVillegaeEnnemi #int / nombre d'humains envoyé au combat par le village adverse / default = 0
         
         def getKing(self):
             return self.__king
@@ -115,6 +117,15 @@ init python:
 
         def defeatVillage(self, bool):
             self.__defeatVillage = bool
+
+        @property
+        def getHumainEnvoyesParVillageEnnemi(self):
+            return self.__humainEnvoyesParVillegaeEnnemi
+
+        def humainEnvoyesParVillegaeEnnemi(self):
+            self.__humainEnvoyesParVillegaeEnnemi = random.randint(self.__ressourceHumain/2, self.__ressourceHumain)
+            self.__ressourceHumain = self.__ressourceHumain - self.__humainEnvoyesParVillegaeEnnemi
+            return self.__humainEnvoyesParVillegaeEnnemi
 
     Titre(_("Que faire ?"))
 
@@ -187,17 +198,17 @@ label start:
     $ king = renpy.random.randint(1, 3) #definition aléatoire de la cité maitre de l'île 1 = islesbury / 2 = redwater / 3 = swanford
     if(king == 1):
         #les valeurs aleatoires sont ptet trop élevés
-        $ islesbury = VillageEnnemi("islesbury", renpy.random.randint(500, 700), renpy.random.randint(500, 700), renpy.random.randint(500, 700), True, False, False)
-        $ redwater = VillageEnnemi("redwater", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False)
-        $ swanford = VillageEnnemi("swanford", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False)
+        $ islesbury = VillageEnnemi("islesbury", renpy.random.randint(500, 700), renpy.random.randint(500, 700), renpy.random.randint(500, 700), True, False, False, 0)
+        $ redwater = VillageEnnemi("redwater", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False, 0)
+        $ swanford = VillageEnnemi("swanford", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False, 0)
     elif(king == 2):
-        $ islesbury = VillageEnnemi("islesbury", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False)
-        $ redwater = VillageEnnemi("redwater", renpy.random.randint(500, 700), renpy.random.randint(500, 700), renpy.random.randint(500, 700), True, False, False)
-        $ swanford = VillageEnnemi("swanford", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False)
+        $ islesbury = VillageEnnemi("islesbury", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False, 0)
+        $ redwater = VillageEnnemi("redwater", renpy.random.randint(500, 700), renpy.random.randint(500, 700), renpy.random.randint(500, 700), True, False, False, 0)
+        $ swanford = VillageEnnemi("swanford", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False, 0)
     elif(king == 3):
-        $ islesbury = VillageEnnemi("islesbury", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False)
-        $ redwater = VillageEnnemi("redwater", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False)
-        $ swanford = VillageEnnemi("swanford", renpy.random.randint(500, 700), renpy.random.randint(500, 700), renpy.random.randint(500, 700), True, False, False)
+        $ islesbury = VillageEnnemi("islesbury", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False, 0)
+        $ redwater = VillageEnnemi("redwater", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False, 0)
+        $ swanford = VillageEnnemi("swanford", renpy.random.randint(500, 700), renpy.random.randint(500, 700), renpy.random.randint(500, 700), True, False, False, 0)
     
     scene villageDuSenateur
     
