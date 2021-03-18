@@ -67,7 +67,7 @@ init python:
     
     #classe hérité de village
     class VillageJoueur(Village):
-        def __init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain, humainEpuises, possibiliteFarm, debutJeu):
+        def __init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain, humainEpuises, possibiliteFarm, niveauDiplomatie, debutJeu):
             Village.__init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain)
             self.__nomVillage = nomVillage #str / nom du village
             self.__ressourceBois = ressourceBois #int / ressources en bois du village
@@ -75,6 +75,7 @@ init python:
             self.__ressourceHumain = ressourceHumain #int / ressources humaines du village
             self.__humainEpuises = humainEpuises #int / les ressources humaines envoyés après qu'ils ait fait une action
             self.__possibiliteFarm = possibiliteFarm #bool / si le joueur peut farm ou si il doit attendre / uniquement pour le joueur
+            self.__niveauDiplomatie = niveauDiplomatie #int / niveau de diplomatie du joueur en fonctions des choix qu'ils peut faire dans #diplomatie.rpy / change l'issue d'un combat / varie entre 1 et -1 / default = 0
             self.__debutJeu = debutJeu #bool / si le joueur vient de commencer ou non / uniquement pour le joueur
         
         @property
@@ -86,6 +87,17 @@ init python:
         
         def getDebutJeu(self):
             return self.__debutJeu
+        
+        @property
+        def getNiveauDiplomatie(self):
+            return self.__niveauDiplomatie
+
+        def changeNiveauDiplomatie(self, nouvelleValeure):
+            self.__niveauDiplomatie = self.__niveauDiplomatie + nouvelleValeure
+            if(self.__niveauDiplomatie > 1):
+                self.__niveauDiplomatie = 1
+            elif(self.__niveauDiplomatie < -1):
+                self.__niveauDiplomatie = -1
         
         def humainEpuises(self, nombreHumainsEnvoyes):
             self.__ressourceHumain = self.__ressourceHumain - nombreHumainsEnvoyes
@@ -117,7 +129,7 @@ init python:
 
         def defeatVillage(self, bool):
             self.__defeatVillage = bool
-
+        
         @property
         def getHumainEnvoyesParVillageEnnemi(self):
             return self.__humainEnvoyesParVillegaeEnnemi
@@ -183,7 +195,7 @@ screen conquete_map():
 
 label start:
     #ici definition de variable et des choses qui changeront pas trop
-    $ joueur = VillageJoueur("Lunaris", 200, 200, 100, 0, True, True)
+    $ joueur = VillageJoueur("Lunaris", 200, 200, 100, 0, True, 0, True)
     python:
         nouveauNomVillage = renpy.input("Entrez le nom de votre village (10 caractères max) : ", length=10)
         if not nouveauNomVillage:

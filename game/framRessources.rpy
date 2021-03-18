@@ -12,21 +12,26 @@ label framRessources:
 
 label farm:
     python:
-        humainEnvoyes = renpy.input("Bien, entrez le nombre d'hommes que vous voulez envoyer : ", length=3)
-        #besoin des expressions régulières / rationnelles pour éviter une erreur. see : https://www.w3schools.com/jsref/jsref_regexp_not_0-9.asp
+        humainEnvoyes = renpy.input("Bien, entrez le nombre d'hommes que vous voulez envoyer : ", allow="0123456789", length=3)
         if not humainEnvoyes:
             humainEnvoyes = 0
-        humainEnvoyes = int(humainEnvoyes)
+        intHumainEnvoyes = int(humainEnvoyes)
 
-    $ joueur.humainEpuises(humainEnvoyes)
 
-    if(joueur.getHumainEpuises > joueur.getRessourceHumain):
-        o "Vous n'avez pas assez d'Hommes pour tout récolez, veuillez réduire vos ambitions."
-        $ joueur.humainEpuises(-humainEnvoyes)
-        jump farm
-    elif(joueur.getHumainEpuises == 0):
-        o "Humm... vous n'avez envoyé personne..."
-        jump farm
+    if(intHumainEnvoyes > joueur.getRessourceHumain):
+        menu:
+            o "Vous n'avez pas assez d'Hommes pour combatre, veuillez réduire vos ambitions."
+            "faire autre chose":
+                jump choix
+            "recommencer":
+                jump farm
+    elif(intHumainEnvoyes == 0):
+        menu:
+            o "Humm... vous n'avez envoyé personne..."
+            "faire autre chose":
+                jump choix
+            "recommencer":
+                jump fram
     
     #entre 1 et 15 : alea entre 15 à 30
     #entre 16 et 50 : alea entre 50 à 100
