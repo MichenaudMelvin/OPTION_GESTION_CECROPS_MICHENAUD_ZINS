@@ -1,4 +1,4 @@
-﻿define s = Character("Senateur")
+define s = Character("Senateur")
 define o = Character("OtherRandomCharacter")
 define personne = Character("")
 
@@ -217,12 +217,17 @@ screen conquete_map():
             add "king.png" xalign 0.687 yalign 0.52
 
 label start:
+    scene plaine
+    $ nombre_guerrier = 0
+    $ nombre_archer = 0
+    $ nombre_cavalier = 0
     #ici definition de variable et des choses qui changeront pas trop
     $ joueur = VillageJoueur("Lunaris", 200, 200, 100, 0, 0, True, 0, True)
     python:
         nouveauNomVillage = renpy.input("Entrez le nom de votre village (10 caractères max) : ", length=10)
         if not nouveauNomVillage:
             nouveauNomVillage = "Lunaris"
+    
     menu:
         personne 'Le nom de votre village sera "[nouveauNomVillage]", ça vous va ?'
         "C'est parfait !":
@@ -278,7 +283,145 @@ label start:
     s "Avec moi à droite"
     jump choix
 
+label interieur_arene:
+    menu:
+        "Entraîner des troupes":
+            jump fighters_creation
+        "Améliorer le bâtiment":
+            jump upgrade_building
+        "Ne rien faire":
+            jump start
+
+label arbre:
+    menu:
+        "Récupérer des ressources":
+            jump ressource
+        "Améliorer le batiment":
+            jump upgrade_building
+        "Ne rien faire":
+            jump villageDuScenateur
+    return
+
+label upgrade_senat: 
+    "Voulez-vous aggrandir le sénat ?"
+    menu:
+        "Améliorer":
+            jump upgrade
+        "Ne rien faire":
+            jump villageDuScenateur
+    return
+
+label upgrade_building: 
+    "Êtes-vous sûr de vouloir aggrandir ce bâtiment ?"
+    menu:
+        "Aggrandir":
+            jump upgrade
+        "Ne rien faire":
+            jump villageDuScenateur
+    return
+
+label assistant:
+    e "De quoi avez-vous besoin ?"
+    jump villageDuScenateur
+    return
+
+label upgrade:
+    "L'aggrandissement est effectué."
+    jump villageDuScenateur
+    return 
+
+label ressource:
+    "Vous avez récupérer les ressources."
+    jump villageDuScenateur
+    return 
+
+label fighters_creation:
+    "Quelles troupes voulez-vous entraîner ?"
+    menu:
+        "Guerrier":
+            jump nbr_guerrier
+        "Archer":
+            jump nbr_archer
+        "Cavalier":
+            jump nbr_cavalier
+
+label nbr_guerrier:
+    $ fighters_nbr = renpy.input("Combien voulez-vous en entraîner ?", allow="0123456789", length=2)
+    python:
+        fighters_nbr = int(fighters_nbr)
+    $ nombre_guerrier = fighters_nbr + nombre_guerrier
+
+    if fighters_nbr == 0:
+        "Vous n'avez pas formé de guerrier."
+    if fighters_nbr == 1:
+        "Vous avez formé [fighters_nbr] guerrier."
+    if fighters_nbr > 1:
+        "Vous avez formé [fighters_nbr] guerriers."
+
+    jump villageDuScenateur
+
+label nbr_archer:
+    $ fighters_nbr = renpy.input("Combien voulez-vous en entraîner ?", allow="0123456789", length=2)
+    python:
+        fighters_nbr = int(fighters_nbr)
+    $ nombre_archer = fighters_nbr + nombre_archer
+
+    if fighters_nbr == "0":
+        "Vous n'avez pas formé d'archer."
+    if fighters_nbr == "1":
+        "Vous avez formé [fighters_nbr] archer."
+    if fighters_nbr > "1":
+        "Vous avez formé [fighters_nbr] archers."
+
+    jump villageDuScenateur
+
+label nbr_cavalier:
+    $ fighters_nbr = renpy.input("Combien voulez-vous en entraîner ?", allow="0123456789", length=2)
+    python:
+        fighters_nbr = int(fighters_nbr)
+    $ nombre_cavalier = fighters_nbr + nombre_cavalier
+
+    if fighters_nbr == "0":
+        "Vous n'avez pas formé de cavalier."
+    if fighters_nbr == "1":
+        "Vous avez formé [fighters_nbr] cavalier."
+    if fighters_nbr > "1":
+        "Vous avez formé [fighters_nbr] cavaliers."
+
+    jump villageDuScenateur
+
+label interieur_senat:
+    menu:
+        "Amelioration":
+            jump upgrade_senat
+        "Assistant":
+            jump assistant
+
+
 label choix:
+    screen troupes:
+        frame:
+            xpos 20
+            ypos 20
+            text "Guerrier(s) : [nombre_guerrier]":
+                size 30
+        frame:
+            xpos 420
+            ypos 20
+            text "Archer(s) : [nombre_archer]":
+                size 30
+        frame:
+            xpos 820
+            ypos 20
+            text "Cavalier(s) : [nombre_cavalier]":
+                size 30
+
+    show screen senat
+    show screen arbre
+    show screen leave  
+    show screen arene
+    show screen troupes
+    call screen leave
     $ renpy.choice_for_skipping()
     call screen menuChoix(adj=menu_adjustment)
     $ tutorial = _return
@@ -290,7 +433,6 @@ label choix:
 
 label notDefindedYet:
     menu:
-        ""
         "caserne":
             jump menuCaserne
         "mine":
