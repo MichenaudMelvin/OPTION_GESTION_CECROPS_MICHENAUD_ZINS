@@ -4,3 +4,4 @@ game/saves/persistent
 *.save
 *.txt
 *.json
+*.rpymc
