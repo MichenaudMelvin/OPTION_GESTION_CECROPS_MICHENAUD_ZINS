@@ -57,16 +57,36 @@ screen menuCaserne(adj):
             action Return(False)
             top_margin 10
 
+label menuCaserne:
+    $ renpy.choice_for_skipping()
+    call screen menuCaserne(adj=menu_adjustment)
+    $ tutorial = _return
+    if not tutorial:
+        jump end
+    
+    call expression tutorial.label
+    jump notDefindedYet
+
 label ameliorerCaserne:
     if caserne.getNiveau < 3:
         $ caserne.niveauSup()
         $ cout = -10 * caserne.getNiveau
         $ joueur.addRessources(cout, cout)
+        hide text
+        show text "[joueur.getRessourceBois]\n\n\n\n\n[joueur.getRessourcePierre]\n\n\n\n\n[joueur.getRessourceHumain]":
+            xalign 0.14
+            yalign 0.1
         o "Votre caserne est maintenant niveau [caserne.getNiveau]."
     else:
         o "Vous ne pouvez plus améliorer votre caserne."
+    jump menuCaserne
 
 label creerUnite:
     $ joueur.addUnite(1)
     $ joueur.addRessources(-5, -8)
-    o "Vous possédez maintenant [joueur.getRessourceUnite()] unités."
+    hide text
+    show text "[joueur.getRessourceBois]\n\n\n\n\n[joueur.getRessourcePierre]\n\n\n\n\n[joueur.getRessourceHumain]":
+        xalign 0.14
+        yalign 0.1
+    o "Vous possédez maintenant [joueur.getRessourceUnite] unités."
+    jump menuCaserne

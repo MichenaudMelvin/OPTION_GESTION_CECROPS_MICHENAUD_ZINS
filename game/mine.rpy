@@ -57,20 +57,40 @@ screen menuMine(adj):
             action Return(False)
             top_margin 10
 
+label menuMine:
+    $ renpy.choice_for_skipping()
+    call screen menuMine(adj=menu_adjustment)
+    $ tutorial = _return
+    if not tutorial:
+        jump end
+    
+    call expression tutorial.label
+    jump notDefindedYet
+
 label ameliorerMine:
     if mine.getNiveau < 3:
         $ mine.niveauSup()
         $ cout = -10 * mine.getNiveau
         $ joueur.addRessources(cout, cout)
+        hide text
+        show text "[joueur.getRessourceBois]\n\n\n\n\n[joueur.getRessourcePierre]\n\n\n\n\n[joueur.getRessourceHumain]":
+            xalign 0.14
+            yalign 0.1
         o "Votre mine est maintenant niveau [mine.getNiveau]."
     else:
         o "Vous ne pouvez plus améliorer votre mine."
+    jump menuMine
 
 label expedition:
     if joueur.getPossibiliteFarm():
         $ joueur.possibiliteFarm(False)
-        $ quantitePierre = renpy.randint(30,60)
+        $ quantitePierre = renpy.random.randint(30,60)
         $ joueur.addRessources(0, quantitePierre)
+        hide text
+        show text "[joueur.getRessourceBois]\n\n\n\n\n[joueur.getRessourcePierre]\n\n\n\n\n[joueur.getRessourceHumain]":
+            xalign 0.14
+            yalign 0.1
         o "Cette expédition vous a rapporté [quantitePierre] de pierre."
     else:
         o "Vous ne pouvez pas lancer d'expédition pour le moment."
+    jump menuMine

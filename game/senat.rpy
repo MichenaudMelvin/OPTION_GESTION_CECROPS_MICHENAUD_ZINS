@@ -57,12 +57,27 @@ screen menuSenat(adj):
             action Return(False)
             top_margin 10
 
+label menuSenat:
+    $ renpy.choice_for_skipping()
+    call screen menuSenat(adj=menu_adjustment)
+    $ tutorial = _return
+    if not tutorial:
+        jump end
+    
+    call expression tutorial.label
+    jump notDefindedYet
+
 #valeur à revoir
 label ameliorerSenat:
     if senat.getNiveau < 3:
         $ senat.niveauSup()
         $ cout = -10 * senat.getNiveau
         $ joueur.addRessources(cout, cout)
+        hide text
+        show text "[joueur.getRessourceBois]\n\n\n\n\n[joueur.getRessourcePierre]\n\n\n\n\n[joueur.getRessourceHumain]":
+            xalign 0.14
+            yalign 0.1
         o "Votre sénat est maintenant niveau [senat.getNiveau]."
     else:
         o "Vous ne pouvez plus améliorer votre sénat."
+    jump menuSenat

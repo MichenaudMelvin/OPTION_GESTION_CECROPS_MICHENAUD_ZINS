@@ -60,7 +60,7 @@ init python:
     
     #classe hérité de village
     class VillageJoueur(Village):
-        def __init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain, humainEpuises, possibiliteFarm, debutJeu):
+        def __init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain, ressourceUnite, humainEpuises, possibiliteFarm, debutJeu):
             Village.__init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain)
             self.__nomVillage = nomVillage #str / nom du village
             self.__ressourceBois = ressourceBois #int / ressources en bois du village
@@ -81,6 +81,7 @@ init python:
         def getDebutJeu(self):
             return self.__debutJeu
         
+        @property
         def getRessourceUnite(self):
             return self.__ressourceUnite
         
@@ -186,7 +187,7 @@ screen conquete_map():
 
 label start:
     #ici definition de variable et des choses qui changeront pas trop
-    $ joueur = VillageJoueur("Lunaris", 200, 200, 100, 0, True, True)
+    $ joueur = VillageJoueur("Lunaris", 200, 200, 100, 0, 0, True, True)
     python:
         nouveauNomVillage = renpy.input("Entrez le nom de votre village (10 caractères max) : ", length=10)
         if not nouveauNomVillage:
@@ -256,8 +257,14 @@ label choix:
     jump choix
 
 label notDefindedYet:
-    s "pas encore défini"
-    jump choix
+    menu:
+        ""
+        "caserne":
+            jump menuCaserne
+        "mine":
+            jump menuMine
+        "senat":
+            jump menuSenat
 
 label end:
     s "Je sias pas encore si ce boutton va servir"
