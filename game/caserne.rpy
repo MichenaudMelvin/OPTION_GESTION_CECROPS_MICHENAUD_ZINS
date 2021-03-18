@@ -59,9 +59,14 @@ screen menuCaserne(adj):
 
 label ameliorerCaserne:
     if caserne.getNiveau < 3:
-        $ caserne.getNiveau()
+        $ caserne.niveauSup()
         $ cout = -10 * caserne.getNiveau
         $ joueur.addRessources(cout, cout)
         o "Votre caserne est maintenant niveau [caserne.getNiveau]."
     else:
         o "Vous ne pouvez plus améliorer votre caserne."
+
+label creerUnite:
+    $ joueur.addUnite(1)
+    $ joueur.addRessources(-5, -8)
+    o "Vous possédez maintenant [joueur.getRessourceUnite()] unités."

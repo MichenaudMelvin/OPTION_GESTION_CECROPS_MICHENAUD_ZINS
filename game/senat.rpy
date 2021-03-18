@@ -28,7 +28,7 @@ init python:
 
     TitreSenat(_("Que faire ?"))
     MenuSenat("ameliorerSenat", _("Améliorer"))
-    MenuSenat("appelerAssistant", _("Appeler l'assistant"))
+    MenuSenat("diplomatie", _("Appeler l'assistant"))
 
 screen menuSenat(adj):
     frame:

@@ -66,6 +66,7 @@ init python:
             self.__ressourceBois = ressourceBois #int / ressources en bois du village
             self.__ressourcePierre = ressourcePierre #int / ressources en pierre du village
             self.__ressourceHumain = ressourceHumain #int / ressources humaines du village
+            self.__ressourceUnite = ressourceUnite #int / ressources militaires du village
             self.__humainEpuises = humainEpuises #int / les ressources humaines envoyés après qu'ils ait fait une action
             self.__possibiliteFarm = possibiliteFarm #bool / si le joueur peut farm ou si il doit attendre / uniquement pour le joueur
             self.__debutJeu = debutJeu #bool / si le joueur vient de commencer ou non / uniquement pour le joueur
@@ -79,6 +80,12 @@ init python:
         
         def getDebutJeu(self):
             return self.__debutJeu
+        
+        def getRessourceUnite(self):
+            return self.__ressourceUnite
+        
+        def addUnite(self, nombreUnites):
+            self.__ressourceUnite += nombreUnites
         
         def humainEpuises(self, nombreHumainsEnvoyes):
             self.__ressourceHumain = self.__ressourceHumain - nombreHumainsEnvoyes

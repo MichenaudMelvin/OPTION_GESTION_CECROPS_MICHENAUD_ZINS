@@ -65,3 +65,12 @@ label ameliorerMine:
         o "Votre mine est maintenant niveau [mine.getNiveau]."
     else:
         o "Vous ne pouvez plus améliorer votre mine."
+
+label expedition:
+    if joueur.getPossibiliteFarm():
+        $ joueur.possibiliteFarm(False)
+        $ quantitePierre = renpy.randint(30,60)
+        $ joueur.addRessources(0, quantitePierre)
+        o "Cette expédition vous a rapporté [quantitePierre] de pierre."
+    else:
+        o "Vous ne pouvez pas lancer d'expédition pour le moment."
