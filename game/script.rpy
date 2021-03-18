@@ -67,12 +67,13 @@ init python:
     
     #classe hérité de village
     class VillageJoueur(Village):
-        def __init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain, humainEpuises, possibiliteFarm, niveauDiplomatie, debutJeu):
+        def __init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain, ressourceUnite, humainEpuises, possibiliteFarm, niveauDiplomatie, debutJeu):
             Village.__init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain)
             self.__nomVillage = nomVillage #str / nom du village
             self.__ressourceBois = ressourceBois #int / ressources en bois du village
             self.__ressourcePierre = ressourcePierre #int / ressources en pierre du village
             self.__ressourceHumain = ressourceHumain #int / ressources humaines du village
+            self.__ressourceUnite = ressourceUnite #int / ressources militaires du village
             self.__humainEpuises = humainEpuises #int / les ressources humaines envoyés après qu'ils ait fait une action
             self.__possibiliteFarm = possibiliteFarm #bool / si le joueur peut farm ou si il doit attendre / uniquement pour le joueur
             self.__niveauDiplomatie = niveauDiplomatie #int / niveau de diplomatie du joueur en fonctions des choix qu'ils peut faire dans #diplomatie.rpy / change l'issue d'un combat / varie entre 1 et -1 / default = 0
@@ -89,6 +90,12 @@ init python:
             return self.__debutJeu
         
         @property
+        def getRessourceUnite(self):
+            return self.__ressourceUnite
+        
+        def addUnite(self, nombreUnites):
+            self.__ressourceUnite += nombreUnites
+        
         def getNiveauDiplomatie(self):
             return self.__niveauDiplomatie
 
@@ -123,7 +130,7 @@ init python:
         
         def getKing(self):
             return self.__king
-
+        
         def getDefeatVillage(self):
             return self.__defeatVillage
 
@@ -138,6 +145,22 @@ init python:
             self.__humainEnvoyesParVillegaeEnnemi = random.randint(self.__ressourceHumain/2, self.__ressourceHumain)
             self.__ressourceHumain = self.__ressourceHumain - self.__humainEnvoyesParVillegaeEnnemi
             return self.__humainEnvoyesParVillegaeEnnemi
+        
+    class Batiment():
+        def __init__(self, type, niveau):
+            self.__type = type #str / type du batiment (caserne, mine, senat)
+            self.__niveau = niveau #int / niveau du batiment, max = 3, debut = 1
+        
+        @property
+        def getType(self):
+            return self.__type
+        
+        @property
+        def getNiveau(self):
+            return self.__niveau
+
+        def niveauSup(self):
+            self.__niveau = self.__niveau + 1
 
     Titre(_("Que faire ?"))
 
@@ -195,7 +218,7 @@ screen conquete_map():
 
 label start:
     #ici definition de variable et des choses qui changeront pas trop
-    $ joueur = VillageJoueur("Lunaris", 200, 200, 100, 0, True, 0, True)
+    $ joueur = VillageJoueur("Lunaris", 200, 200, 100, 0, 0, True, 0, True)
     python:
         nouveauNomVillage = renpy.input("Entrez le nom de votre village (10 caractères max) : ", length=10)
         if not nouveauNomVillage:
@@ -222,7 +245,12 @@ label start:
         $ redwater = VillageEnnemi("redwater", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False, 0)
         $ swanford = VillageEnnemi("swanford", renpy.random.randint(500, 700), renpy.random.randint(500, 700), renpy.random.randint(500, 700), True, False, False, 0)
     
-    scene villageDuSenateur
+    #creation des batiments
+    $ caserne = Batiment("caserne", 1)
+    $ mine = Batiment("mine", 1)
+    $ senat = Batiment("senat", 1)
+
+    scene villageDuScenateur
     
     show senateur:
         xalign 0.5
@@ -261,8 +289,14 @@ label choix:
     jump choix
 
 label notDefindedYet:
-    s "pas encore défini"
-    jump choix
+    menu:
+        ""
+        "caserne":
+            jump menuCaserne
+        "mine":
+            jump menuMine
+        "senat":
+            jump menuSenat
 
 label end:
     s "Je sias pas encore si ce boutton va servir"
