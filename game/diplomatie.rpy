@@ -12,18 +12,70 @@ label diplomatie:
     #De 0 à 6 : personnages humains / De 7 à 9 : annimaux / De 10 à 12 : météo // longueur : 12
 
     $ autrePersoAlea = listePerso[renpy.random.randint(0, 9)] #juste pour fait s'envoler [autrePersoAlea]
-    $ listeAction = ["a volé(e)", "a tué(e)", "a brulé", "a perdu", "s'est endormi", "a donné(e) de quoi manger à une famille fauchée", "a aidé(e) un paysant à récolter le blé", "a entraîné les soldats", "a vaincu un village ennemi", "a sali", "a dévoré", "a grandement aidé pendant une bataille contre [villeAlea]", "ont engloutis", "rendent le sol glissant", "fait tomber des troncs d'abres sur", "fait s'envoler [autrePersoAlea]"] #faire un systeme pour autrePersoAlea et villeAlea
+    $ listeAction = ["a volé(e)", "a tué(e)", "a brulé", "a perdu(e)", "s'est endormi(e)", "a donné(e) de quoi manger à une famille fauchée", "a aidé(e) un paysant à récolter le blé", "a entraîné(e) les soldats", "a vaincu(e) un village ennemi", "a sali", "a dévoré", "a grandement aidé pendant une bataille contre [villeAlea]", "ont engloutis", "rendent le sol glissant", "fait tomber des troncs d'abres sur", "fait s'envoler [autrePersoAlea]"] #faire un systeme pour autrePersoAlea et villeAlea
     #Pour humains : De 0 à 2 : Negatif / De 3 à 4 : neutre / De 5 à 8 : positif // Pour annimaux : De 9 à 10 : Negatif / 11 : positif // Pour météo : 12 à 15 // longueur : 15
 
     $ listeContextuelle = [" une épée", " de l'argent", " du pain", " un des cuisiners", " un des chevaux du roi", " un traitre", " les récoles de blé", " une partie des écuries", " l'entièreté de la forêt", " plusieurs armes de différents soldats", " les clés de la prison", " durant un combat", " dans la forêt", " pour mieux se préparer à un combat", " les quartier royaux", " les équipement des soldats ce qui les gêne pour combattre", " des provisions", " certains soldats ennemis", " une partie de la citadelle", " les écuries", " ce qui nuit à la sécurité des travailleurs", " ce qui empêche le combat contre [villeAlea]", " les chevaux", " les combattants qui s'entrainent"]
     #Pour humains //// voler : De 0 à 1 : Negatif / 2 : neutre // tuer : De 3 à 4 : négatif / 5 : positif // bruler : De 6 à 8 : négatif // perdu : 9 : négatif / 10 neutre // endormi : 11 : negatif / 12 : neutre / 13 : positif // Pour annimaux : 14 à 17 // Pour météo : 18 à 23 // longueur : 23 
 
     $ i = 0
+    #si action négative : entre -0.2 et 0
+    #si action neutre : -0.1 et 0.1
+    #si action positive : entre 0 et 0.2
+    #sauf si persoAlea = météo car toutes ces actions sont négatives
+
+    #meme valeurs que pour l'action
+    #si contexte négatif : entre -0.2 et 0
+    #si contexte neutre : -0.1 et 0.1
+    #si contxte positif : entre 0 et 0.2
+
+    #cela sera compensé par la réponse du joueur 
+    
+    # par minimum
+    #     action négative + contexte négatif = -0.4
+    #     action négative + contexte neutre = -0.3
+    #     action négative + contexte positif = -0.2
+
+    #     action neutre + contexte négatif = -0.3
+    #     action neutre + contexte neutre = -0.2
+    #     action neutre + contexte positif = -0.1
+        
+    #     action / contexte positivef = 0
+
+    # par maximum
+    #     action négative + contexte négatif = 0
+    #     action négative + contexte neutre = -0.1
+    #     action négative + contexte positif = 0.2
+
+    #     action neutre + contexte négatif = 0.1
+    #     action neutre + contexte neutre = 0.2
+    #     action neutre + contexte positif = 0.3
+
+    #     action / contexte positivef = 0.2
+
+    # Pour les choix
+    #     action négative + contexte négatif // si choix négatif : 0  // si choix positif : -0.3
+    #     action négative + contexte neutre // si choix négatif : 0 // si choix positif : -0.2
+    #     action négative + contexte positif // si choix négatif : -0.2 // si choix positif : 0.2
+
+    #     action neutre + contexte négatif // si choix négatif : -0.2 // si choix positif : 0.2
+    #     action neutre + contexte neutre // si choix négatif : -0.1 // si choix positif : 0.1
+    #     action neutre + contexte positif // si choix négatif : -0.1 // si choix positif : 0.1
+        
+    #     action / contexte positivef // si choix négatif : -0.2 // si choix positif : 0.2
+
+    # si choix négatif :
+    # si choix positif :
+
+    #les choix récompensés ne sont pas nécessairement moraux
     while i != 5:
+        $ consequencesDesChoix = 0 #float
+        $ compensationChoix1 = 0 #float / ce qui va compenser la valeur de "consequencesDesChoix" / si prend le premier choix
+        $ compensationChoix2 = 0 #Si prend le deuxième choix
         $ villeAlea = listeVille[renpy.random.randint(0, 2)]
         $ persoAlea = listePerso[renpy.random.randint(0, 12)]
         if(persoAlea == "Un prêtre" or persoAlea == "Un chevalier" or persoAlea == "Le marquis" or persoAlea == "L'écuyer" or persoAlea == "Un paysant" or persoAlea == "La marquise" or persoAlea == "Le prince"):
-            #Pour humains
+            #Pour humains :
             if(persoAlea == "Un chevalier" or persoAlea == "Le prince"):
                 $ actionAlea = listeAction[renpy.random.randint(0, 8)]
             elif(persoAlea != "Un paysant"):
@@ -31,147 +83,288 @@ label diplomatie:
             else:
                 $ actionAlea = listeAction[renpy.random.randint(0, 5)]
             
+            #actions négatives :
             if(actionAlea == "a volé(e)"):
                 $ contextAlea = listeContextuelle[renpy.random.randint(0, 2)]
+                $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.2, 0)
+                #contexte négatif :
                 if(contextAlea == " une épée"):
                     $ choix1 = "Nous avons besoin d'armes"
+                    $ compensationChoix1 = 0
                     $ choix2 = "Nous avons suffisament d'armes"
+                    $ compensationChoix2 = 0.3
+                    $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.2, 0)
+                
+                #contexte négatif :
                 elif(contextAlea == " de l'argent"):
                     $ choix1 = "L'argent est bien trop important"
+                    $ compensationChoix1 = 0
                     $ choix2 = "Nous avons assez d'argent"
+                    $ compensationChoix2 = 0.3
+                    $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.2, 0)
+                
+                #contexte neutre :
                 elif(contextAlea == " du pain"):
                     $ choix1 = "La nourriture est une denré précieuse"
+                    $ compensationChoix1 = 0.2
                     $ choix2 = "Ne me déranger pas pour si peu"
+                    $ compensationChoix2 = 0
+                    $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.1, 0.1)
             
             elif(actionAlea == "a tué(e)"):
                 $ contextAlea = listeContextuelle[renpy.random.randint(3, 5)]
+                $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.2, 0)
+                #contexte négatif :
                 if(contextAlea == " un des cuisiners"):
                     $ choix1 = "Il y a d'autes cuistots"
+                    $ compensationChoix1 = 0
                     $ choix2 = "Arrêter le coupable"
+                    $ compensationChoix2 = 0.3
+                    $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.2, 0)
+                
+                #contexte négatif :
                 elif(contextAlea == " un des chevaux du roi"):
                     $ choix1 = "C'est un crime impardonable"
+                    $ compensationChoix1 = 0.3
                     $ choix2 = "Il y a des dizaines de chevaux"
+                    $ compensationChoix2 = 0
+                    $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.2, 0)
+                
+                #contexte positif :
                 elif(contextAlea == " un traitre"):
                     $ choix1 = "Il aurait mieux valu le juger"
+                    $ compensationChoix1 = -0.2
                     $ choix2 = "Féliciter"
+                    $ compensationChoix2 = 0.2
+                    $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(0, 0.2)
             
             elif(actionAlea == "a brulé"):
                 $ contextAlea = listeContextuelle[renpy.random.randint(6, 8)]
+                $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.2, 0)
+                #contexte négatif :
                 if(contextAlea == " les récoles de blé"):
                     $ choix1 = "L'enfermer"
+                    $ compensationChoix1 = 0.3
                     $ choix2 = "Ne rien faire"
+                    $ compensationChoix2 = 0
+                    $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.2, 0)
+                
+                #contexte négatif :
                 elif(contextAlea == " une partie des écuries"):
                     $ choix1 = "Mettre les chevaux en sécurité"
+                    $ compensationChoix1 = 0.3
                     $ choix2 = "Préférer enfermer le coupable"
+                    $ compensationChoix2 = 0 
+                    $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.2, 0)
+                
+                #contexte négatif :
                 elif(contextAlea == " l'entièreté de la forêt"):
                     $ choix1 = "Ce n'est pas grave"
+                    $ compensationChoix1 = 0
                     $ choix2 = "Mieux vaut arrêter cette personne"
+                    $ compensationChoix2 = 0.3
+                    $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.2, 0)
             
-            elif(actionAlea == "a perdu"):
+            #actions "neutre" :
+            elif(actionAlea == "a perdu(e)"):
                 $ contextAlea = listeContextuelle[renpy.random.randint(9, 10)]
+                #contexte négatif :
                 if(contextAlea == " plusieurs armes de différents soldats"):
                     $ choix1 = "Peu importe"
+                    $ compensationChoix1 = -0.2
                     $ choix2 = "C'est très grave"
+                    $ compensationChoix2 = 0.2
+                    $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.2, 0)
+                
+                #contexte neutre :
                 elif(contextAlea == " les clés de la prison"):
                     $ choix1 = "Il métire une sanction humiliante"
+                    $ compensationChoix1 = 0.1
                     $ choix2 = "Refaites-en d'autres"
+                    $ compensationChoix2 = -0.1
+                    $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.1, 0.1)
             
-            elif(actionAlea == "s'est endormi"):
+            elif(actionAlea == "s'est endormi(e)"):
+                #contexte négatif :
                 $ contextAlea = listeContextuelle[renpy.random.randint(11, 13)]
                 if(contextAlea == " durant un combat"):
-                    $ choix1 = "Comment est-ce possible"
+                    $ choix1 = "Comment est-ce possible ?"
+                    $ compensationChoix1 = 0.2
                     $ choix2 = "Livrer-le directement à l'ennemi"
+                    $ compensationChoix2 = 0.2
+                    $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.2, 0)
+                
+                #contexte neutre :
                 elif(contextAlea == " dans la forêt"):
                     $ choix1 = "Que fait t'il dans la forêt"
+                    $ compensationChoix1 = 0.2
                     $ choix2 = "Laisser-le"
+                    $ compensationChoix2 = -0.2
+                    $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.1, 0.1)
+                
+                #contexte positif :
                 elif(contextAlea == " pour mieux se préparer à un combat"):
                     $ choix1 = "Pas de fainéants dans les rangs de l'armée"
+                    $ compensationChoix1 = -0.1
                     $ choix2 = "Il a bien raison de se reposer"
+                    $ compensationChoix2 = 0.1
+                    $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(0, 0.2)
             
+            #actions / contextes positivefs :
             elif(actionAlea == "a donné(e) de quoi manger à une famille fauchée"):
                 $ contextAlea = ""
                 $ choix1 = "Que les pauvres restent pauvre"
+                $ compensationChoix1 = -0.2
                 $ choix2 = "C'est une bonne action, cela pourra être utile plus tard"
+                $ compensationChoix2 = 0.2
+                $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(0, 0.2)
             
             elif(actionAlea == "a aidé(e) un paysant à récolter le blé"):
                 $ contextAlea = ""
                 $ choix1 = "Il a bien fait de prendre de son temps pour aider"
+                $ compensationChoix1 = 0.2
                 $ choix2 = "Il n'a pas le temps pour s'occuper de ça"
+                $ compensationChoix2 = -0.2
+                $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(0, 0.2)
             
-            elif(actionAlea == "a entraîné les soldats"):
+            elif(actionAlea == "a entraîné(e) les soldats"):
                 $ contextAlea = ""
                 $ choix1 = "Féliciter"
+                $ compensationChoix1 = 0.2
                 $ choix2 = "Dire qu'ils ne sont pas assez entrainés"
+                $ compensationChoix2 = -0.2
+                $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(0, 0.2)
             
-            elif(actionAlea == "a vaincu un village ennemi"):
+            elif(actionAlea == "a vaincu(e) un village ennemi"):
                 $ contextAlea = ""
                 $ choix1 = "Faire une cérémonie pour célébrer cette victoire"
+                $ compensationChoix1 = 0.2
                 $ choix2 = "Demmander de repartir au combat"
+                $ compensationChoix2 = -0.2
+                $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(0, 0.2)
+        
         elif(persoAlea == "Un chien" or persoAlea == "Un cochon" or persoAlea == "Un cheval"):
-            #Annimaux
+            #Pour annimaux :
             $ actionAlea = listeAction[renpy.random.randint(9, 11)]
+            #actions négatives :
             if(actionAlea == "a sali"):
                 $ contextAlea = listeContextuelle[renpy.random.randint(14, 15)]
+                $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.2, 0)
+                #contexte négatif :
                 if(contextAlea == " les quartier royaux"):
                     $ choix1 = "C'est une insulte envers le roi"
+                    $ compensationChoix1 = 0
                     $ choix2 = "Demander de nettoyer"
+                    $ compensationChoix2 = 0.3
+                    $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.2, 0)
+                
+                #contexte négatif :
                 elif(contextAlea == " les équipement des soldats ce qui les gêne pour combattre"):
                     $ choix1 = "Qu'ils continue à combattre"
+                    $ compensationChoix1 = 0
                     $ choix2 = "Déclarer la défaite de la battaille"
+                    $ compensationChoix2 = 0.3
+                    $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.2, 0)
 
             elif(actionAlea == "a dévoré"):
                 $ contextAlea = listeContextuelle[renpy.random.randint(16, 17)]
+                $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.2, 0)
+                #contexte négatif :
                 if(contextAlea == " des provisions"):
                     $ choix1 = "Ce ne sont que quelques résereves"
+                    $ compensationChoix1 = 0
                     $ choix2 = "Allez en récolter d'autres"
+                    $ compensationChoix2 = 0.3
+                    $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.2, 0)
+                
+                #contexte positif :
                 elif(contextAlea == " certains soldats ennemis"):
                     $ choix1 = "Féliciter cet annimal"
+                    $ compensationChoix1 = 0.2
                     $ choix2 = "Les annimaux ne sont pas des combattants"
+                    $ compensationChoix2 = -0.2
+                    $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(0, -0.2)
             
+            #action / contexte positivef :
             elif(actionAlea == "a grandement aidé pendant une bataille contre [villeAlea]"):
                 $ contextAlea = ""
                 $ choix1 = "Envoyer plus d'annimaux aux combats"
+                $ compensationChoix1 = 0.2
                 $ choix2 = "L'envoyer sur une autre bataille"
+                $ compensationChoix2 = -0.2
+                $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(0, 0.2)
 
         elif(persoAlea == "Les innondations" or persoAlea == "Les intempéries" or persoAlea == "Le vent"):
-            #Méteo
+            #Pour méteo :
             $ actionAlea = listeAction[renpy.random.randint(12, 15)]
+            #uniquement des actions négatives :
             if(actionAlea == "ont engloutis"):
                 $ contextAlea = listeContextuelle[renpy.random.randint(18, 19)]
+                #contexte négatif :
                 if(contextAlea == " une partie de la citadelle"):
                     $ choix1 = "Evacuer les citoyens"
+                    $ compensationChoix1 = 0.1
                     $ choix2 = "Ils peuvent bien se débrouiller tout seuls"
+                    $ compensationChoix2 = -0.2
+                    $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.2, 0)
+                
+                #contexte négatif :
                 elif(contextAlea == " les écuries"):
                     $ choix1 = "Les chevaux m'importe peu"
+                    $ compensationChoix1 = -0.2
                     $ choix2 = "Evacuer les chevaux"
+                    $ compensationChoix2 = 0.1
+                    $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.2, 0)
             
             elif(actionAlea == "rendent le sol glissant"):
                 $ contextAlea = listeContextuelle[renpy.random.randint(20, 21)]
+                #contexte négatif :
                 if(contextAlea == " ce qui nuit à la sécurité des travailleurs"):
                     $ choix1 = "Mieux vaut assurer leur sécurité"
+                    $ compensationChoix1 = 0.1
                     $ choix2 = "Pas question de faire une pause"
+                    $ compensationChoix2 = -0.2
+                    $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.2, 0)
+                
+                #contexte positif :
                 elif(contextAlea == " ce qui empêche le combat contre [villeAlea]"):
                     $ choix1 = "Laissez-les combattre"
+                    $ compensationChoix1 = -0.3
                     $ choix2 = "Battre en retraite"
+                    $ compensationChoix2 = 0.2
+                    $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(0, 0.2)
             
             elif(actionAlea == "fait tomber des troncs d'abres sur"):
                 $ contextAlea = listeContextuelle[renpy.random.randint(22, 23)]
+                #contexte négatif :
                 if(contextAlea == " les chevaux"):
                     $ choix1 = "Nous n'avons pas besoin de chevaux"
+                    $ compensationChoix1 = -0.2
                     $ choix2 = "Mettez-les chevaux en sécurité"
+                    $ compensationChoix2 = 0.1
+                    $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.2, 0)
+                
+                #contexte négatif :
                 elif(contextAlea == " les combattants qui s'entrainent"):
                     $ choix1 = "Cessez leur entrainement"
+                    $ compensationChoix1 = 0.1
                     $ choix2 = "Ce sera d'autant plus formateur"
-
+                    $ compensationChoix2 = -0.2
+                    $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.2, 0)
+            
+            #action / contexte négatif
             elif(actionAlea == "fait s'envoler [autrePersoAlea]"):
                 $ contextAlea = ""
                 $ choix1 = "Mettez tout le village à l'abri"
+                $ compensationChoix1 = 0.1
                 $ choix2 = "Que chacun continue son activité"
+                $ compensationChoix2 = -0.2
+                $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.2, 0)
         
         else:
             #En cas d'erreur
             $ i = 4
-            o "humm, ce n'est pas censé arriver, nom du perso choisi aléatoirement : [persoAlea]"
+            o "humm, ce n'est pas censé arriver."
             o "Réessayez s'il vous plaît"
             jump choix
         
@@ -179,12 +372,12 @@ label diplomatie:
             o "[persoAlea] [actionAlea][contextAlea]. Que décidez vous de faire ?"
             "[choix1]":
                 $ choixDuJoueur = choix1
+                $ compensationDuJoueur = compensationChoix1
                 $ i = i + 1
-                #add stats
             "[choix2]":
                 $ choixDuJoueur = choix2
+                $ compensationDuJoueur = compensationChoix2
                 $ i = i + 1
-                #add stats
         
         #Un message différent pour chaque choix
         if(persoAlea == "Un prêtre" or persoAlea == "Un chevalier" or persoAlea == "Le marquis" or persoAlea == "L'écuyer" or persoAlea == "Un paysant" or persoAlea == "La marquise" or persoAlea == "Le prince"):
@@ -198,7 +391,7 @@ label diplomatie:
                     $ messageSenateur = "Pas besoin de rechercher cette personne, nous avons largement assez d'armes pour tout le monde."
                 
                 elif(choixDuJoueur == "L'argent est bien trop important"):
-                    $ messageSenateur = "Retrouvez-moi cet argent, nous en avons bien besoin pour pouvoir règner en maintre sur cet île."
+                    $ messageSenateur = "Retrouvez-moi cet argent, nous en avons bien besoin pour pouvoir règner en maître sur cet île."
                 
                 elif(choixDuJoueur == "Nous avons assez d'argent"):
                     $ messageSenateur = "Nous avons suffisament d'argent pour tenir jusqu'au prochaines conquêtes."
@@ -206,7 +399,7 @@ label diplomatie:
                 elif(choixDuJoueur == "La nourriture est une denré précieuse"):
                     $ messageSenateur = "Nous avons besoin de toute nourriture, comdaner ce vol."
                 
-                elif(choixDuJoueur == "Ne me déranger pas pour un morceau de pain"):
+                elif(choixDuJoueur == "Ne me déranger pas pour si peu"):
                     $ messageSenateur = "Ce n'est qu'un bout de pain, restez sérieux."
             
             #Pour tuer
@@ -250,7 +443,7 @@ label diplomatie:
                     $ messageSenateur = "Il vaudrait mieux arrêter cette personne avant qu'elle s'attaque à notre village."
 
             #Pour perdu
-            elif(actionAlea == "a perdu"):
+            elif(actionAlea == "a perdu(e)"):
                 if(choixDuJoueur == "Peu importe"):
                     $ messageSenateur = "Nous en avons des milliers d'autres, dites à cette personne de ne par recommencer et de ne plus s'en occuper."
 
@@ -264,8 +457,8 @@ label diplomatie:
                     $ messageSenateur = "Ne me gêner pas pour si peu, refaites-en d'autres et n'en parlons plus."
             
             #Pour endormi
-            elif(actionAlea == "s'est endormi"):
-                if(choixDuJoueur == "Comment est-ce possible"):
+            elif(actionAlea == "s'est endormi(e)"):
+                if(choixDuJoueur == "Comment est-ce possible ?"):
                     $ messageSenateur = "Comment peut-on s'endormir en plein comabt ? Tuer cet individu."
 
                 elif(choixDuJoueur == "Livrer-le à l'ennemi"):
@@ -401,5 +594,14 @@ label diplomatie:
         else:
             #En cas d'erreur
             $ messageSenateur = "Humm, c'est une erreur... Réessayez s'il vous plaît"
+        $ joueur.changeNiveauDiplomatie(consequencesDesChoix + compensationDuJoueur)
         s "[messageSenateur]"
+    
+    #message différent en fonction du niveau de diplomatie du joueur pour l'informer des choix qu'il vient de faire.
+    if(joueur.getNiveauDiplomatie() > 0):
+        o "Les habitants semblent apprécier votre diplomatie."
+    elif(joueur.getNiveauDiplomatie() < 0):
+        o "Les habitants semblent ne pas être en accord avec votre politique."
+    elif(joueur.getNiveauDiplomatie() == 0):
+        o "Vos choix n'ont pas beaucoup affectés les villageois."
     jump choix
