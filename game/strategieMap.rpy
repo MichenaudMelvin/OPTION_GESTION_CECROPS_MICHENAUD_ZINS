@@ -64,33 +64,38 @@ label combat:
             "faire autre chose":
                 jump choix
             "recommencer":
-                jump combat
-    #s "[conversionStr]"
-    
+                jump combat    
     $ humainEnvoyesParVillageChoisi = villageChoisi.humainEnvoyesParVillegaeEnnemi()
+    
     python:
         #ajouter la jauge d'affection à coder dans #diplomatie.rpy
-
+        #possiblement à revoir
         #reduction des humains par un chiffre aléatoire entre 0 et 1, float // la réduction correspond au nombre d'humains mort au combat
         #+/- de perte en fonction de la diplomatie du joueur.
-        resultatComabtJoueur = int(intHumainEnvoyes * (renpy.random.uniform(0, 1) + joueur.getNiveauDiplomatie))
-        humainJoueurMorts = intHumainEnvoyes - resultatComabtJoueur
+        resultatCombatJoueur = int(intHumainEnvoyes * (renpy.random.uniform(0, 1) + joueur.getNiveauDiplomatie))
+        if(resultatCombatJoueur > intHumainEnvoyes):
+            resultatCombatJoueur = intHumainEnvoyes
+        elif(resultatCombatJoueur < 0):
+            resultatCombatJoueur = 0
+        humainJoueurMorts = intHumainEnvoyes - resultatCombatJoueur
         
         #reduction des humains par un chiffre aléatoire entre 0.5 et 1, float // la réduction correspond au nombre d'humains mort au combat
         resultatCombatEnnemi = int(humainEnvoyesParVillageChoisi * renpy.random.uniform(0.5, 1))
         humainEnnemiMorts = humainEnvoyesParVillageChoisi - resultatCombatEnnemi
-
+    
+    s "[joueur.getNiveauDiplomatie]"
     pause 2
-    s "Sur nos [intHumainEnvoyes] humains envoyés, il reste [resultatComabtJoueur] hommes, les [humainJoueurMorts] autres sont morts."
+    s "Sur nos [intHumainEnvoyes] humains envoyés, il reste [resultatCombatJoueur] hommes, les [humainJoueurMorts] autres sont morts."
     s "Sur les [humainEnvoyesParVillageChoisi] humains envoyés par [villageChoisi.getNomVillage], ils leurs en restent [resultatCombatEnnemi] et [humainEnnemiMorts] de leurs hommes sont morts."
-    if(resultatComabtJoueur > resultatCombatEnnemi):
+    if(resultatCombatJoueur > resultatCombatEnnemi):
         $ villageChoisi.defeatVillage(True)
-    elif(resultatComabtJoueur <= resultatCombatEnnemi):
+    elif(resultatCombatJoueur <= resultatCombatEnnemi):
         $ villageChoisi.defeatVillage(False)
     else:
         s "Normalement cette situation n'est pas possible."
         jump choix
     
+    $ joueur.addRessources(0, 0, joueur.getHumainEpuises)
     $ joueur.humainEpuises(-joueur.getHumainEpuises)
     if(villageChoisi.getDefeatVillage() == True and villageChoisi.getKing() == True):
         #si le joueur gagne contre le village maitre de l'ile : condition de victoire du jeu.
@@ -98,26 +103,23 @@ label combat:
     elif(villageChoisi.getDefeatVillage() == True):
         #si le joueur gagne contre l'ennemi, gain de toutes les ressources du village adverse
         o "Nous avons récupérés [villageChoisi.getRessourceBois] ressources de bois et [villageChoisi.getRessourcePierre] ressources de pierre de [villageChoisi.getNomVillage]."
-        o "Et [villageChoisi.getRessourceHumain] hommes ont rejoint nos rangs."
+        o "Et [villageChoisi.getRessourceHumain] hommes ont rejoint nos rangs, [resultatCombatJoueur] hommes ont besoin de se reposer."
         $ joueur.addRessources(villageChoisi.getRessourceBois, villageChoisi.getRessourcePierre, villageChoisi.getRessourceHumain)
         $ villageChoisi.addRessources(-villageChoisi.getRessourceBois, -villageChoisi.getRessourcePierre, -villageChoisi.getRessourceHumain)
-        $ joueur.humainEpuises(resultatComabtJoueur)
+        $ joueur.humainEpuises(resultatCombatJoueur)
     else:
         #si le joueur perd contre l'ennemi, perte de la moitié de ses ressources qui sont envoyés au village adverse.
         $ perteBois = (joueur.getRessourceBois)/2
         $ pertePierre = (joueur.getRessourcePierre)/2
         #perte de la moitié des humains restants
-        $ perteHumain = resultatComabtJoueur/2
-        $ joueur.humainEpuises(perteHumain)
-        o "Nous avons perdu [perteBois] ressources de bois et [pertePierre] ressources de pierre."
-        o "Et [perteHumain] hommes ont quittés nos rangs."
-        $ joueur.addRessources(-perteBois, -pertePierre, -perteHumain-humainJoueurMorts)
+        $ perteHumain = resultatCombatJoueur/2
+        $ restePerteHumain = resultatCombatJoueur%2
+        $ joueur.humainEpuises(perteHumain+restePerteHumain)
+        $ joueur.addRessources(-perteBois, -pertePierre, -resultatCombatJoueur-humainJoueurMorts)
         $ villageChoisi.addRessources(perteBois, pertePierre, perteHumain)
-    show text "[joueur.getRessourceBois]\n\n\n\n\n[joueur.getRessourcePierre]\n\n\n\n\n[joueur.getRessourceHumain]\n\n\n\n[joueur.getHumainEpuises]":
-        xalign 0.14
-        yalign 0.1
+        o "Nous avons perdu [perteBois] ressources de bois et [pertePierre] ressources de pierre."
+        o "Et [perteHumain] hommes ont quittés nos rangs, [joueur.getHumainEpuises] hommes ont besoin de se reposer."
     
     $ joueur.possibiliteFarm(True)
     $ joueur.avanceJeu()
     jump choix
-

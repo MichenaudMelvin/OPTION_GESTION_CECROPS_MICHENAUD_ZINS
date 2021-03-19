@@ -69,6 +69,8 @@ label diplomatie:
 
     #les choix récompensés ne sont pas nécessairement moraux
     while i != 5:
+        $ choix1 = ""
+        $ choix2 = ""
         $ consequencesDesChoix = 0 #float
         $ compensationChoix1 = 0 #float / ce qui va compenser la valeur de "consequencesDesChoix" / si prend le premier choix
         $ compensationChoix2 = 0 #Si prend le deuxième choix
@@ -597,11 +599,14 @@ label diplomatie:
         $ joueur.changeNiveauDiplomatie(consequencesDesChoix + compensationDuJoueur)
         s "[messageSenateur]"
     
+    $ joueur.possibiliteFarm(True)
+    $ joueur.addRessources(0, 0, joueur.getHumainEpuises)
+    $ joueur.humainEpuises(-joueur.getHumainEpuises)
     #message différent en fonction du niveau de diplomatie du joueur pour l'informer des choix qu'il vient de faire.
-    if(joueur.getNiveauDiplomatie() > 0):
+    if(joueur.getNiveauDiplomatie > 0):
         o "Les habitants semblent apprécier votre diplomatie."
-    elif(joueur.getNiveauDiplomatie() < 0):
+    elif(joueur.getNiveauDiplomatie < 0):
         o "Les habitants semblent ne pas être en accord avec votre politique."
-    elif(joueur.getNiveauDiplomatie() == 0):
+    elif(joueur.getNiveauDiplomatie == 0):
         o "Vos choix n'ont pas beaucoup affectés les villageois."
     jump choix

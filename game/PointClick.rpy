@@ -3,40 +3,42 @@ screen senat:
         xpos 600
         ypos 360
         idle "senat.png"
-        at custom_senat
-        action [Hide("senat"), Hide("arbre"), Hide("arene"), Jump("interieur_senat")]
+        hover "senathover.png"
+        at senat_zoom
+        action [Hide("arbre"), Hide("arene"), Jump("menuSenat")]
 
 screen arbre:
     imagebutton:
         xpos 190
         ypos 450
         idle "arbre.png"
-        at custom_arbre
-        action [Hide("senat"), Hide("arbre"), Hide("arene"), Jump("arbre")]
+        hover "arbrehover.png"
+        at arbre_zoom
+        action [Hide("senat"), Hide("arene"), Jump("menuMine")]
 
 screen leave:
     imagebutton:
         xpos 1100
         ypos 550
         idle "leave.png"
+        hover "leavehover.png"
         at return_zoom
-        action [Jump("start")]
+        action [Jump("choix")]
 
 screen arene:
     imagebutton:
         xpos 800
         ypos 220
-        idle "arena2.png"
-        at custom_arena
-        action [Hide("senat"), Hide("arbre"), Hide("arene"), Jump("interieur_arene")]
-    
+        idle "arena.png"
+        hover "arenahover.png"
+        at arena_zoom
+        action [Hide("senat"), Hide("arbre"), Jump("menuCaserne")]
 
-
-transform custom_senat:        
+transform senat_zoom:        
     zoom 0.5
-transform custom_arbre:
+transform arbre_zoom:
     zoom 0.2
 transform return_zoom:
     zoom 0.3
-transform custom_arena:
+transform arena_zoom:
     zoom 0.3
