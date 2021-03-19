@@ -31,26 +31,28 @@ label farm:
             "faire autre chose":
                 jump choix
             "recommencer":
-                jump fram
+                jump farm
     
     #entre 1 et 15 : alea entre 15 à 30
     #entre 16 et 50 : alea entre 50 à 100
     #entre 51 et 100 : alea entre 200 à 300
     #101+ : alea entre 350 à 500
+    $ joueur.addRessources(0, 0, joueur.getHumainEpuises)
+    $ joueur.humainEpuises(-joueur.getHumainEpuises)
 
-    if(joueur.getHumainEpuises > 0 and joueur.getHumainEpuises <= 15):
+    if(intHumainEnvoyes > 0 and intHumainEnvoyes <= 15):
         $ aleatoireBois = renpy.random.randint(15, 30)
         $ aleatoirePierre = renpy.random.randint(15, 30)
 
-    elif(joueur.getHumainEpuises >= 16 and joueur.getHumainEpuises <= 50):
+    elif(intHumainEnvoyes >= 16 and intHumainEnvoyes <= 50):
         $ aleatoireBois = renpy.random.randint(50, 100)
         $ aleatoirePierre = renpy.random.randint(50, 100)
 
-    elif(joueur.getHumainEpuises >= 51 and joueur.getHumainEpuises <= 100):
+    elif(intHumainEnvoyes >= 51 and intHumainEnvoyes <= 100):
         $ aleatoireBois = renpy.random.randint(200, 300)
         $ aleatoirePierre = renpy.random.randint(200, 300)
 
-    elif(joueur.getHumainEpuises > 100):
+    elif(intHumainEnvoyes > 100):
         $ aleatoireBois = renpy.random.randint(350, 500)
         $ aleatoirePierre = renpy.random.randint(350, 500)
     else:
@@ -58,14 +60,11 @@ label farm:
         jump framRessources
 
     $ joueur.possibiliteFarm(False)
-
-    $ joueur.addRessources(aleatoireBois, aleatoirePierre, 0)
+    $ joueur.humainEpuises(intHumainEnvoyes)
+    $ joueur.addRessources(aleatoireBois, aleatoirePierre, -intHumainEnvoyes)
     pause 2
     s "Et voila c'est fini"
     hide text
-    show text "[joueur.getRessourceBois]\n\n\n\n\n[joueur.getRessourcePierre]\n\n\n\n\n[joueur.getRessourceHumain]\n\n\n\n[joueur.getHumainEpuises]":
-        xalign 0.14
-        yalign 0.1
     s "On a recoltés [aleatoireBois] bois et [aleatoirePierre] pierre"
     s "Ce qui fait un total de [joueur.getRessourceBois] bois et [joueur.getRessourcePierre] pierre."
     s "[joueur.getHumainEpuises] hommes on besoin de se reposer."
