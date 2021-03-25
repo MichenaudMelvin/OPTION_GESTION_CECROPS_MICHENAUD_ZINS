@@ -9,14 +9,14 @@ label diplomatie:
     $ listeVille = ["Islesbur", "Redwater", "Swanford"]
 
     $ listePerso = ["Un prêtre", "Un chevalier", "Le marquis", "L'écuyer", "Un paysant", "La marquise", "Le prince", "Un chien", "Un cochon", "Un cheval", "Les innondations", "Les intempéries", "Le vent"]
-    #De 0 à 6 : personnages humains / De 7 à 9 : annimaux / De 10 à 12 : météo // longueur : 12
+    #De 0 à 6 : personnages humains / De 7 à 9 : animaux / De 10 à 12 : météo // longueur : 12
 
     $ autrePersoAlea = listePerso[renpy.random.randint(0, 9)] #juste pour fait s'envoler [autrePersoAlea]
     $ listeAction = ["a volé(e)", "a tué(e)", "a brulé", "a perdu(e)", "s'est endormi(e)", "a donné(e) de quoi manger à une famille fauchée", "a aidé(e) un paysant à récolter le blé", "a entraîné(e) les soldats", "a vaincu(e) un village ennemi", "a sali", "a dévoré", "a grandement aidé pendant une bataille contre [villeAlea]", "ont engloutis", "rendent le sol glissant", "fait tomber des troncs d'abres sur", "fait s'envoler [autrePersoAlea]"] #faire un systeme pour autrePersoAlea et villeAlea
-    #Pour humains : De 0 à 2 : Negatif / De 3 à 4 : neutre / De 5 à 8 : positif // Pour annimaux : De 9 à 10 : Negatif / 11 : positif // Pour météo : 12 à 15 // longueur : 15
+    #Pour humains : De 0 à 2 : Negatif / De 3 à 4 : neutre / De 5 à 8 : positif // Pour animaux : De 9 à 10 : Negatif / 11 : positif // Pour météo : 12 à 15 // longueur : 15
 
     $ listeContextuelle = [" une épée", " de l'argent", " du pain", " un des cuisiners", " un des chevaux du roi", " un traitre", " les récoles de blé", " une partie des écuries", " l'entièreté de la forêt", " plusieurs armes de différents soldats", " les clés de la prison", " durant un combat", " dans la forêt", " pour mieux se préparer à un combat", " les quartier royaux", " les équipement des soldats ce qui les gêne pour combattre", " des provisions", " certains soldats ennemis", " une partie de la citadelle", " les écuries", " ce qui nuit à la sécurité des travailleurs", " ce qui empêche le combat contre [villeAlea]", " les chevaux", " les combattants qui s'entrainent"]
-    #Pour humains //// voler : De 0 à 1 : Negatif / 2 : neutre // tuer : De 3 à 4 : négatif / 5 : positif // bruler : De 6 à 8 : négatif // perdu : 9 : négatif / 10 neutre // endormi : 11 : negatif / 12 : neutre / 13 : positif // Pour annimaux : 14 à 17 // Pour météo : 18 à 23 // longueur : 23 
+    #Pour humains //// voler : De 0 à 1 : Negatif / 2 : neutre // tuer : De 3 à 4 : négatif / 5 : positif // bruler : De 6 à 8 : négatif // perdu : 9 : négatif / 10 neutre // endormi : 11 : negatif / 12 : neutre / 13 : positif // Pour animaux : 14 à 17 // Pour météo : 18 à 23 // longueur : 23 
 
     $ i = 0
     #si action négative : entre -0.2 et 0
@@ -246,7 +246,7 @@ label diplomatie:
                 $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(0, 0.2)
         
         elif(persoAlea == "Un chien" or persoAlea == "Un cochon" or persoAlea == "Un cheval"):
-            #Pour annimaux :
+            #Pour animaux :
             $ actionAlea = listeAction[renpy.random.randint(9, 11)]
             #actions négatives :
             if(actionAlea == "a sali"):
@@ -262,9 +262,9 @@ label diplomatie:
                 
                 #contexte négatif :
                 elif(contextAlea == " les équipement des soldats ce qui les gêne pour combattre"):
-                    $ choix1 = "Qu'ils continue à combattre"
+                    $ choix1 = "Qu'ils continuent à combattre"
                     $ compensationChoix1 = 0
-                    $ choix2 = "Déclarer la défaite de la battaille"
+                    $ choix2 = "Déclarer la défaite de la bataille"
                     $ compensationChoix2 = 0.3
                     $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.2, 0)
 
@@ -281,16 +281,16 @@ label diplomatie:
                 
                 #contexte positif :
                 elif(contextAlea == " certains soldats ennemis"):
-                    $ choix1 = "Féliciter cet annimal"
+                    $ choix1 = "Féliciter cet animal"
                     $ compensationChoix1 = 0.2
-                    $ choix2 = "Les annimaux ne sont pas des combattants"
+                    $ choix2 = "Les animaux ne sont pas des combattants"
                     $ compensationChoix2 = -0.2
                     $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(0, -0.2)
             
             #action / contexte positivef :
             elif(actionAlea == "a grandement aidé pendant une bataille contre [villeAlea]"):
                 $ contextAlea = ""
-                $ choix1 = "Envoyer plus d'annimaux aux combats"
+                $ choix1 = "Envoyer plus d'animaux sur les prochain combat"
                 $ compensationChoix1 = 0.2
                 $ choix2 = "L'envoyer sur une autre bataille"
                 $ compensationChoix2 = -0.2
@@ -507,19 +507,19 @@ label diplomatie:
                 $ messageSenateur = "Pas de temps à perdre, que les soldats repartent au combat."
         
         elif(persoAlea == "Un chien" or persoAlea == "Un cochon" or persoAlea == "Un cheval"):
-            #Pour annimaux
+            #Pour animaux
             #Pour salir
             if(actionAlea == "a sali"):
                 if(choixDuJoueur == "C'est une insulte envers le roi"):
-                    $ messageSenateur = "Exectuer cet annimal, c'est une insulte envers le roi"
+                    $ messageSenateur = "Exécuter cet animal, c'est une insulte envers le roi"
                 
                 elif(choixDuJoueur == "Demander de nettoyer"):
-                    $ messageSenateur = "Commencez par nettoyer, je demanderai l'avis du roi sur ce qu'on fait de cet annimal"
+                    $ messageSenateur = "Commencez par nettoyer, je demanderai l'avis du roi sur ce qu'on fait de cet animal"
                 
-                elif(choixDuJoueur == "Qu'ils continue à combattre"):
+                elif(choixDuJoueur == "Qu'ils continuent à combattre"):
                     $ messageSenateur = "Que les soldats continue de combattre, leur prochain combat leur paraitra plus simple."
                 
-                elif(choixDuJoueur == "Déclarer la défaite de la battaille"):
+                elif(choixDuJoueur == "Déclarer la défaite de la bataille"):
                     $ messageSenateur = "Il me semble plus important de déclarer une défaite que de perdre des hommes inutilement."
             
             #Pour dévorer
@@ -528,17 +528,17 @@ label diplomatie:
                     $ messageSenateur = "Ce n'est pas très grâve il nous reste de bons stocks de provision, ce n'était que quelques réserves."
                 
                 elif(choixDuJoueur == "Allez en récolter d'autres"):
-                    $ messageSenateur = "Condamnez-moi cet annimal et trouvez-en d'autres."
+                    $ messageSenateur = "Condamnez-moi cet animal et trouvez-en d'autres."
                 
-                elif(choixDuJoueur == "Féliciter cet annimal"):
-                    $ messageSenateur = "Félicitez moi cet annimal."
+                elif(choixDuJoueur == "Féliciter cet animal"):
+                    $ messageSenateur = "Félicitez-moi cet animal."
 
-                elif(choixDuJoueur == "Les annimaux ne sont pas des combattants"):
-                    $ messageSenateur = "Peu importe les annimaux ne sont pas des combattants."
+                elif(choixDuJoueur == "Les animaux ne sont pas des combattants"):
+                    $ messageSenateur = "Peu importe les animaux ne sont pas des combattants."
             
             #Pour aider pendant un combat
-            elif(choixDuJoueur == "Envoyer plus d'annimaux sur les prochain combat"):
-                $ messageSenateur = "C'est une bonne stratégie pour les prochains comabts, nous enverrons plus d'annimaux la prochaine fois."
+            elif(choixDuJoueur == "Envoyer plus d'animaux sur les prochain combat"):
+                $ messageSenateur = "C'est une bonne stratégie pour les prochains comabts, nous enverrons plus d'animaux la prochaine fois."
             
             elif(choixDuJoueur == "L'envoyer sur une autre bataille"):
                 $ messageSenateur = "Parfait, envoyez-le sur un autre champ de bataille pour qu'il puise faire de même."
@@ -609,4 +609,7 @@ label diplomatie:
         o "Les habitants semblent ne pas être en accord avec votre politique."
     elif(joueur.getNiveauDiplomatie == 0):
         o "Vos choix n'ont pas beaucoup affectés les villageois."
+    show otherGuy:
+        xpos -0.5
+    with move
     jump choix

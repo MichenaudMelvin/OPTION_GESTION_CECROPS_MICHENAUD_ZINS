@@ -110,7 +110,7 @@ init python:
     
     #classe hérité de village
     class VillageEnnemi(Village):
-        def __init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain, king, villageChoisi, defeatVillage, humainEnvoyesParVillegaeEnnemi):
+        def __init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain, king, villageChoisi, defeatVillage, humainEnvoyesParVillageEnnemi):
             Village.__init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain)
             self.__nomVillage = nomVillage #str / nom du village
             self.__ressourceBois = ressourceBois #int / ressources en bois du village
@@ -118,7 +118,7 @@ init python:
             self.__ressourceHumain = ressourceHumain #int / ressources humaines du villag
             self.__king = king #bool / si le village est maitre de l'île
             self.__defeatVillage = defeatVillage #bool / si le village a deja été vaincu par le joueur / default = False
-            self.__humainEnvoyesParVillegaeEnnemi = humainEnvoyesParVillegaeEnnemi #int / nombre d'humains envoyé au combat par le village adverse / default = 0
+            self.__humainEnvoyesParVillageEnnemi = humainEnvoyesParVillageEnnemi #int / nombre d'humains envoyé au combat par le village adverse / default = 0
         
         def getKing(self):
             return self.__king
@@ -131,12 +131,12 @@ init python:
         
         @property
         def getHumainEnvoyesParVillageEnnemi(self):
-            return self.__humainEnvoyesParVillegaeEnnemi
+            return self.__humainEnvoyesParVillageEnnemi
 
-        def humainEnvoyesParVillegaeEnnemi(self):
-            self.__humainEnvoyesParVillegaeEnnemi = random.randint(self.__ressourceHumain/2, self.__ressourceHumain)
-            self.__ressourceHumain = self.__ressourceHumain - self.__humainEnvoyesParVillegaeEnnemi
-            return self.__humainEnvoyesParVillegaeEnnemi
+        def humainEnvoyesParVillageEnnemi(self):
+            self.__humainEnvoyesParVillageEnnemi = random.randint(self.__ressourceHumain/2, self.__ressourceHumain)
+            self.__ressourceHumain = self.__ressourceHumain - self.__humainEnvoyesParVillageEnnemi
+            return self.__humainEnvoyesParVillageEnnemi
         
     class Batiment():
         def __init__(self, type, niveau):
@@ -256,7 +256,6 @@ label start:
     show screen ressourceJoueur
     
     #les icones sont trop grandes
-    #{outlinecolor=#000000}{/outlinecolor}
     show senateur:
         xalign 0.5
         yalign 1.0
@@ -275,13 +274,16 @@ label choix:
     # call expression tutorial.label from _call_expression
     show screen senat
     show screen arbre
-    show screen leave
     show screen arene
-    call screen leave
+    o "Sélectionnez un bâtiment"
+    jump choix
 
 label victory:
-    $ not tutorial
     s "wow, we won"
+    return
+
+label defaite:
+    s "mdr on a perdu"
     return
 
 screen ressourceJoueur:

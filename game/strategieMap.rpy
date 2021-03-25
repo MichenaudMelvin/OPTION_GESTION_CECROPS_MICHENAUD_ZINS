@@ -54,18 +54,29 @@ label combat:
     if(intHumainEnvoyes > joueur.getRessourceHumain):
          menu:
             o "Vous n'avez pas assez d'Hommes pour combatre, veuillez réduire vos ambitions."
-            "faire autre chose":
-                jump choix
-            "recommencer":
+            "Recommencer":
                 jump combat
+            "Faire autre chose":
+                jump choix
+            
     elif(intHumainEnvoyes == 0):
         menu:
-            o "Humm... vous n'avez envoyé personne..."
-            "faire autre chose":
+            o "Humm... Vous n'avez envoyé personne..."
+            "Recommencer":
+                jump combat
+            "Faire autre chose":
                 jump choix
-            "recommencer":
-                jump combat    
-    $ humainEnvoyesParVillageChoisi = villageChoisi.humainEnvoyesParVillegaeEnnemi()
+    
+    #avoir au minium 50 de moins que le village ennemis attaqué
+    elif(intHumainEnvoyes <= villageChoisi.getRessourceHumain-50):
+        menu:
+            o "Nous allons nous faire éclater"
+            "Recommencer":
+                jump combat
+            "Faire autre chose":
+                jump choix
+    
+    $ humainEnvoyesParVillageChoisi = villageChoisi.humainEnvoyesParVillageEnnemi()
     
     python:
         #ajouter la jauge d'affection à coder dans #diplomatie.rpy
@@ -80,10 +91,10 @@ label combat:
         humainJoueurMorts = intHumainEnvoyes - resultatCombatJoueur
         
         #reduction des humains par un chiffre aléatoire entre 0.5 et 1, float // la réduction correspond au nombre d'humains mort au combat
-        resultatCombatEnnemi = int(humainEnvoyesParVillageChoisi * renpy.random.uniform(0.5, 1))
+        #plus de pertes ennemis si le niveau de la caserne est élevée.
+        resultatCombatEnnemi = int(humainEnvoyesParVillageChoisi * (renpy.random.uniform(0.5, 1) / caserne.getNiveau))
         humainEnnemiMorts = humainEnvoyesParVillageChoisi - resultatCombatEnnemi
     
-    s "[joueur.getNiveauDiplomatie]"
     pause 2
     s "Sur nos [intHumainEnvoyes] humains envoyés, il reste [resultatCombatJoueur] hommes, les [humainJoueurMorts] autres sont morts."
     s "Sur les [humainEnvoyesParVillageChoisi] humains envoyés par [villageChoisi.getNomVillage], ils leurs en restent [resultatCombatEnnemi] et [humainEnnemiMorts] de leurs hommes sont morts."
@@ -97,7 +108,7 @@ label combat:
     
     $ joueur.addRessources(0, 0, joueur.getHumainEpuises)
     $ joueur.humainEpuises(-joueur.getHumainEpuises)
-    if(villageChoisi.getDefeatVillage() == True and villageChoisi.getKing() == True):
+    if((villageChoisi.getDefeatVillage() == True and villageChoisi.getKing() == True) or villageChoisi.getRessourceHumain == 0):
         #si le joueur gagne contre le village maitre de l'ile : condition de victoire du jeu.
         jump victory
     elif(villageChoisi.getDefeatVillage() == True):
