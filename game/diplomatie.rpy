@@ -610,6 +610,6 @@ label diplomatie:
     elif(joueur.getNiveauDiplomatie == 0):
         o "Vos choix n'ont pas beaucoup affectés les villageois."
     show otherGuy:
-        xpos -0.5
+        xalign -0.5
     with move
     jump choix

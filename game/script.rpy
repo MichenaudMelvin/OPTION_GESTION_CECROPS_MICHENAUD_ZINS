@@ -192,7 +192,6 @@ init python:
 
 #Pour la world map
 
-#https://www.cgtrader.com/items/2492633/download-page lien césar
 screen conquete_map():
     imagemap:
         idle "map"
@@ -260,9 +259,11 @@ label start:
     #les icones sont trop grandes
     show senateur:
         xalign 0.5
-        yalign 1.0
+        yalign 0.5
     s "Bonjour"
-    show senateur at right
+    show senateur:
+        xalign 0.99
+        yalign 0.5
     with move
     jump choix
 

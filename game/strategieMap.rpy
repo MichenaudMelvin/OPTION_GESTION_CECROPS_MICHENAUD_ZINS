@@ -70,7 +70,7 @@ label combat:
     #avoir au minium 50 de moins que le village ennemis attaqué
     elif(intHumainEnvoyes <= villageChoisi.getRessourceHumain-50):
         menu:
-            o "Nous allons nous faire éclater"
+            o "Vous voulez envoyer trop peu d'unités par rapport à leurs nombre total d'unités"
             "Recommencer":
                 jump combat
             "Faire autre chose":
@@ -108,15 +108,15 @@ label combat:
     
     $ joueur.addRessources(0, 0, joueur.getHumainEpuises)
     $ joueur.humainEpuises(-joueur.getHumainEpuises)
-    if((villageChoisi.getDefeatVillage() == True and villageChoisi.getKing() == True) or villageChoisi.getRessourceHumain == 0):
+    if((villageChoisi.getDefeatVillage() == True and villageChoisi.getKing() == True) or (villageChoisi.getKing() == True and villageChoisi.getRessourceHumain == 0)):
         #si le joueur gagne contre le village maitre de l'ile : condition de victoire du jeu.
         jump victory
-    elif(villageChoisi.getDefeatVillage() == True):
+    elif(villageChoisi.getDefeatVillage() == True or villageChoisi.getRessourceHumain == 0):
         #si le joueur gagne contre l'ennemi, gain de toutes les ressources du village adverse
         o "Nous avons récupérés [villageChoisi.getRessourceBois] ressources de bois et [villageChoisi.getRessourcePierre] ressources de pierre de [villageChoisi.getNomVillage]."
         o "Et [villageChoisi.getRessourceHumain] hommes ont rejoint nos rangs, [resultatCombatJoueur] hommes ont besoin de se reposer."
-        $ joueur.addRessources(villageChoisi.getRessourceBois, villageChoisi.getRessourcePierre, villageChoisi.getRessourceHumain)
-        $ villageChoisi.addRessources(-villageChoisi.getRessourceBois, -villageChoisi.getRessourcePierre, -villageChoisi.getRessourceHumain)
+        $ joueur.addRessources(villageChoisi.getRessourceBois, villageChoisi.getRessourcePierre, (villageChoisi.getRessourceHumain - resultatCombatJoueur))
+        $ villageChoisi.addRessources(-villageChoisi.getRessourceBois, -villageChoisi.getRessourcePierre, -(villageChoisi.getRessourceHumain + resultatCombatJoueur))
         $ joueur.humainEpuises(resultatCombatJoueur)
     else:
         #si le joueur perd contre l'ennemi, perte de la moitié de ses ressources qui sont envoyés au village adverse.
