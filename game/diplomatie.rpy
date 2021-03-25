@@ -1,11 +1,11 @@
 label diplomatie:
-    show otherGuy:
-        xalign -0.5
-    with move
-    show otherGuy at left
-    with move
-    o "Bonjour monsieur le sénateur"
-    s "Bonjour"
+    if(joueur.getDiplomatieDoneOnce() == False):
+        o "Bien plusieurs choses se sont produites dans [joueur.getNomVillage], et en fonctions de ces situations vous allez devoir choisir quoi faire."
+        o "Vos choix impacterons la diplomatie de [joueur.getNomVillage]."
+        o "Si votre politique plait aux habitans, vos guerriers combattrons mieux. A l'inverse si elle ne plait pas, les guerriers auront plus de mal à combattre."
+        $ joueur.diplomatieAlreadyDoneOnce()
+    else:
+        o "Bien, je vais vous exposer les derniers évènements ayant eu lieu dans [joueur.getNomVillage]."
     $ listePerso = ["Un prêtre", "Un chevalier", "Le marquis", "L'écuyer", "Un paysant", "La marquise", "Le prince", "Un chien", "Un cochon", "Un cheval", "Les inondations", "Les intempéries", "Le vent"]
     #De 0 à 6 : personnages humains / De 7 à 9 : animaux / De 10 à 12 : météo // longueur : 12
 
@@ -66,11 +66,15 @@ label diplomatie:
 
     #les choix récompensés ne sont pas nécessairement moraux
     while i != 5:
+        #reset de tout, parce que desfois ça bug, c'est marrant (non)
         $ choix1 = ""
         $ choix2 = ""
+        $ persoAlea = ""
+        $ actionAlea = ""
+        $ contextAlea = ""
         $ consequencesDesChoix = 0 #float
         $ compensationChoix1 = 0 #float / ce qui va compenser la valeur de "consequencesDesChoix" / si prend le premier choix
-        $ compensationChoix2 = 0 #Si prend le deuxième choix
+        $ compensationChoix2 = 0 #float / si prend le deuxième choix
         $ persoAlea = listePerso[renpy.random.randint(0, 12)]
         if(persoAlea == "Un prêtre" or persoAlea == "Un chevalier" or persoAlea == "Le marquis" or persoAlea == "L'écuyer" or persoAlea == "Un paysant" or persoAlea == "La marquise" or persoAlea == "Le prince"):
             #Pour humains :
@@ -291,7 +295,8 @@ label diplomatie:
                 $ choix2 = "L'envoyer sur une autre bataille"
                 $ compensationChoix2 = -0.2
                 $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(0, 0.2)
-
+        
+        # elif(persoAlea == "Un chien" or persoAlea == "Un cochon" or persoAlea == "Un cheval"):
         elif(persoAlea == "Les inondations" or persoAlea == "Les intempéries" or persoAlea == "Le vent"):
             #Pour méteo :
             $ actionAlea = listeAction[renpy.random.randint(12, 15)]
@@ -335,7 +340,7 @@ label diplomatie:
                         $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(0, 0.2)
             
             #Pour le vent
-            if(persoAlea == "Le vent"):
+            elif(persoAlea == "Le vent"):
                 if(actionAlea == "fait tomber des troncs d'arbres sur"):
                     $ contextAlea = listeContextuelle[renpy.random.randint(22, 23)]
                     #contexte négatif :
@@ -354,15 +359,13 @@ label diplomatie:
                         $ compensationChoix2 = -0.2
                         $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.2, 0)
                 
-                #action / contexte négatif
-                elif(actionAlea == "fait s'envoler la marquise"):
-                    $ contextAlea = ""
-                    $ choix1 = "Mettez tout le village à l'abri"
-                    $ compensationChoix1 = 0.1
-                    $ choix2 = "Que chacun continue son activité"
-                    $ compensationChoix2 = -0.2
-                    $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.2, 0)
-        
+                    #action / contexte négatif
+                    elif(actionAlea == "fait s'envoler la marquise"):
+                        $ choix1 = "Mettez tout le village à l'abri"
+                        $ compensationChoix1 = 0.1
+                        $ choix2 = "Que chacun continue son activité"
+                        $ compensationChoix2 = -0.2
+                        $ consequencesDesChoix = consequencesDesChoix + renpy.random.uniform(-0.2, 0)
         else:
             #En cas d'erreur
             $ i = 4
@@ -609,7 +612,4 @@ label diplomatie:
         o "Les habitants semblent ne pas être en accord avec votre politique."
     elif(joueur.getNiveauDiplomatie == 0):
         o "Vos choix n'ont pas beaucoup affectés les villageois."
-    show otherGuy:
-        xalign -0.5
-    with move
     jump choix
