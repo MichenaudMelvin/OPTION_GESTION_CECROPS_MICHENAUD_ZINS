@@ -191,6 +191,8 @@ init python:
 #             top_margin 10
 
 #Pour la world map
+
+#https://www.cgtrader.com/items/2492633/download-page lien césar
 screen conquete_map():
     imagemap:
         idle "map"
