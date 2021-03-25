@@ -18,17 +18,26 @@ label creerUnite:
     $ fighters_nbr = renpy.input("Combien voulez-vous en entraîner ?", allow="0123456789", length=3)
     python:
         fighters_nbr = int(fighters_nbr)
-    
+    $ coutBois = fighters_nbr*2
+    $ coutPierre = fighters_nbr*3
+    if(coutBois > joueur.getRessourceBois):
+        o "Vous n'avez pas assez de bois pour former ces unités"
+        jump creerUnite
+    if(coutPierre > joueur.getRessourcePierre):
+        o "Vous n'avez pas assez de pierre pour former ces unités"
+        jump creerUnite
     if fighters_nbr == 0:
         o "Vous n'avez pas formé de guerrier."
     elif fighters_nbr == 1:
         o "Vous avez formé [fighters_nbr] guerrier."
-        o "cela vous a couté X trucs"
+        o "Cela vous a couté [coutBois] bois et [coutPierre] pierres"
     elif fighters_nbr > 1:
         o "Vous avez formé [fighters_nbr] guerriers."
-        o "cela vous a couté X trucs"
+        o "Cela vous a couté [coutBois] bois et [coutPierre] pierres"
     
-    $ joueur.addRessources(-5, -8, fighters_nbr)
+    $ joueur.addRessources(-coutBois, -coutPierre, (fighters_nbr+joueur.getHumainEpuises))
+    $ joueur.humainEpuises(-joueur.getHumainEpuises)
+    $ joueur.possibiliteFarm(True)
     o "Vous possédez maintenant [joueur.getRessourceHumain] unités."
     jump choix
 
@@ -46,27 +55,17 @@ label menuMine:
         "Ne rien faire":
             jump choix
 
-label ameliorerMine:
-    if mine.getNiveau < 3:
-        $ mine.niveauSup()
-        $ cout = -10 * mine.getNiveau
-        $ joueur.addRessources(cout, cout)
-        o "Votre mine est maintenant niveau [mine.getNiveau]."
-    else:
-        o "Vous ne pouvez plus améliorer votre mine."
-    jump choix
-
 #
 # Batiment Senat
 #
 
 label menuSenat: 
     menu:
+        "Appeler votre assisant":
+            jump diplomatie
         "Améliorer":
             $ batimentChoisi = senat
             jump upgrade_building
-        "Apelez votre assisant":
-            jump diplomatie
         "Ne rien faire":
             jump choix
 
@@ -75,18 +74,35 @@ label upgrade_building:
     menu:
         o "Êtes-vous sûr de vouloir aggrandir votre [batimentChoisi.getType] ?"
         "Aggrandir":
-            if batimentChoisi.getNiveau < 3:
+            #besoin d'améliorer le sénat pour pouvoir améliorer les autres batiments
+            if(batimentChoisi == senat and senat.getNiveau < 3):
+                $ coutRessources = -100 * batimentChoisi.getNiveau
+                if(coutRessources > joueur.getRessourceBois or coutRessources > joueur.getRessourcePierre):
+                    o "Vous n'avez pas assez de ressources pour améliorer votre [batimentChoisi]"
+                    jump choix
                 $ batimentChoisi.niveauSup()
-                $ coutRessources = -10 * batimentChoisi.getNiveau
                 $ joueur.addRessources(coutRessources, coutRessources, 0)
                 o "Votre [batimentChoisi.getType] est maintenant niveau [batimentChoisi.getNiveau]."
+            elif(batimentChoisi.getNiveau < 3 and batimentChoisi.getNiveau < senat.getNiveau):
+                $ coutRessources = -50 * batimentChoisi.getNiveau
+                if(coutRessources > joueur.getRessourceBois or coutRessources > joueur.getRessourcePierre):
+                    o "Vous n'avez pas assez de ressources pour améliorer votre [batimentChoisi]"
+                    jump choix
+                $ batimentChoisi.niveauSup()
+                $ joueur.addRessources(coutRessources, coutRessources, 0)
+                o "Votre [batimentChoisi.getType] est maintenant niveau [batimentChoisi.getNiveau]."
+            elif(batimentChoisi.getNiveau == 3):
+                o "Votre [batimentChoisi.getType] est déjà au niveau maximum."
+            elif(batimentChoisi.getNiveau >= senat.getNiveau):
+                o "Vous devez d'abord améliorer votre sénat"
+            if(caserne.getNiveau == 3 and mine.getNiveau == 3 and senat.getNiveau == 3):
+                jump defaite
             else:
-                o "Vous [batimentChoisi.getType] est déjà au niveau maximum."
-            jump choix
+                jump choix
         "Ne rien faire":
             jump choix
 
-#save du programme de killian // à voir si on garde le système de différents type de combatants ou pas.
+#save du programme de kilian // à voir si on garde le système de différents type de combatants ou pas.
 # "Archer":
 #     jump nbr_archer
 # "Cavalier":

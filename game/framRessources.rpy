@@ -41,20 +41,20 @@ label farm:
     $ joueur.humainEpuises(-joueur.getHumainEpuises)
 
     if(intHumainEnvoyes > 0 and intHumainEnvoyes <= 15):
-        $ aleatoireBois = renpy.random.randint(15, 30)
-        $ aleatoirePierre = renpy.random.randint(15, 30)
+        $ aleatoireBois = renpy.random.randint(15, 30) * mine.getNiveau
+        $ aleatoirePierre = renpy.random.randint(15, 30) * mine.getNiveau
 
     elif(intHumainEnvoyes >= 16 and intHumainEnvoyes <= 50):
-        $ aleatoireBois = renpy.random.randint(50, 100)
-        $ aleatoirePierre = renpy.random.randint(50, 100)
+        $ aleatoireBois = renpy.random.randint(50, 100) * mine.getNiveau
+        $ aleatoirePierre = renpy.random.randint(50, 100) * mine.getNiveau
 
     elif(intHumainEnvoyes >= 51 and intHumainEnvoyes <= 100):
-        $ aleatoireBois = renpy.random.randint(200, 300)
-        $ aleatoirePierre = renpy.random.randint(200, 300)
+        $ aleatoireBois = renpy.random.randint(200, 300) * mine.getNiveau
+        $ aleatoirePierre = renpy.random.randint(200, 300) * mine.getNiveau
 
     elif(intHumainEnvoyes > 100):
-        $ aleatoireBois = renpy.random.randint(350, 500)
-        $ aleatoirePierre = renpy.random.randint(350, 500)
+        $ aleatoireBois = renpy.random.randint(350, 500) * mine.getNiveau
+        $ aleatoirePierre = renpy.random.randint(350, 500) * mine.getNiveau
     else:
         o "Oops, une erreur est survenue, veuillez réessayer"
         jump framRessources

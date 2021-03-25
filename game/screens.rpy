@@ -563,7 +563,7 @@ screen about():
             if gui.about:
                 text "[gui.about!t]\n"
 
-            text _("Jeu de gestion fait en spécialité programmation fait par Valentin Cecrops, Michenaud Melvin et Kilian Zins. Réalisé avec le moteur {a=https://www.renpy.org/}Ren'Py{/a} [renpy.version_only].")
+            text _("Jeu de gestion fait en spécialité programmation fait par Cecrops Valentin, Michenaud Melvin et Zins Kilian. Réalisé avec le moteur {a=https://www.renpy.org/}Ren'Py{/a} [renpy.version_only].")
 
 
 style about_label is gui_label
