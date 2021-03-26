@@ -252,14 +252,12 @@ label victory:
     o "Bravo monsieur le sénateur, [joueur.getNomVillage] a réussi à devenir maître de l'île grâce à vous !"
     return
 
-# if(villageChoisi.getKing() == True and joueur.getDebutJeu() == True):
-
-
 label defaite:
     $ joueur.humainEpuises(-joueur.getHumainEpuises)
     $ joueur.addRessources(-joueur.getRessourceBois, -joueur.getRessourcePierre, -joueur.getRessourceHumain)
     if(joueur.getManqueDeRessource() == True):
         o "Monsieur le sénateur, nous n'avons plus assez de ressources pour continuer."
+        o "C'est la fin de [joueur.getNomVillage]."
         return
     else:
         if(islesbury.getKing() == True):
@@ -270,6 +268,7 @@ label defaite:
             o "A force d'améliorer les batiments de [joueur.getNomVillage], cela a attirer les regards de [swanford.getNomVillage]."
         o "Ils ont eu peur de nous, et nous ont attaqués par surprises"
         o "Ils ont pillés toutes nos ressources et tous nos hommes sont morts..."
+        o "C'est la fin de [joueur.getNomVillage]."
         return
 
 #permet d'afficher les ressources, se met constament à jour
