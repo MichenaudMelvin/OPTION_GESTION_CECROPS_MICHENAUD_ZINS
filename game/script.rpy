@@ -3,34 +3,7 @@ define o = Character("Assistant")
 define personne = Character("")
 
 init python:
-    import re
     import random
-    # choix = []
-    # #Menu qui permet de choisir les différentes actions possibles du jeu // repris du tuto renpy
-    # class Titre(object):
-    #     def __init__(self, title):
-    #         self.kind = "titre"
-    #         self.title = title
-
-    #         choix.append(self)
-
-    # class Menu(object):
-    #     def __init__(self, label, title, move=True):
-    #         self.kind = "choix"
-    #         self.label = label
-    #         self.title = title
-
-    #         if move and (move != "after"):
-    #             self.move_before = True
-    #         else:
-    #             self.move_before = False
-
-    #         if move and (move != "before"):
-    #             self.move_after = True
-    #         else:
-    #             self.move_after = False
-
-    #         choix.append(self)
     
     #Pour chaque village
     class Village():
@@ -40,7 +13,7 @@ init python:
             self.__ressourcePierre = ressourcePierre #int / ressources en pierre du village
             self.__ressourceHumain = ressourceHumain #int / ressources humaines du village
         
-        #property pour ne pas mettre "()" après la méthode // permet l'affichage dans les dialogues
+        #@property pour ne pas mettre "()" après la méthode // permet l'affichage dans les dialogues
         @property
         def getNomVillage(self):
             return self.__nomVillage
@@ -57,6 +30,7 @@ init python:
         def getRessourceHumain(self):
             return self.__ressourceHumain
         
+        #pour ajouter / enlever des ressources à un village
         def addRessources(self, bois, pierre, humain):
             self.__ressourceBois = self.__ressourceBois + bois
             self.__ressourcePierre = self.__ressourcePierre + pierre
@@ -67,7 +41,7 @@ init python:
     
     #classe hérité de village
     class VillageJoueur(Village):
-        def __init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain, humainEpuises, possibiliteFarm, niveauDiplomatie, debutJeu):
+        def __init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain, humainEpuises, possibiliteFarm, niveauDiplomatie, debutJeu, manqueDeRessource, diplomatieDoneOnce):
             Village.__init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain)
             self.__nomVillage = nomVillage #str / nom du village
             self.__ressourceBois = ressourceBois #int / ressources en bois du village
@@ -77,7 +51,9 @@ init python:
             self.__possibiliteFarm = possibiliteFarm #bool / si le joueur peut farm ou si il doit attendre / uniquement pour le joueur
             self.__niveauDiplomatie = niveauDiplomatie #int / niveau de diplomatie du joueur en fonctions des choix qu'ils peut faire dans #diplomatie.rpy / change l'issue d'un combat / varie entre 1 et -1 / default = 0
             self.__debutJeu = debutJeu #bool / si le joueur vient de commencer ou non / uniquement pour le joueur
-        
+            self.__manqueDeRessource = manqueDeRessource #bool / uniquement si le joueur n'a pas assez de joueur pour réaliser n'importe quelle action
+            self.__diplomatieDoneOnce = diplomatieDoneOnce #bool / si le joueur est deja passé par le label diplomatie
+
         @property
         def getHumainEpuises(self):
             return self.__humainEpuises
@@ -88,10 +64,14 @@ init python:
         def getDebutJeu(self):
             return self.__debutJeu
         
+        def avanceJeu(self):
+            self.__debutJeu = False
+        
         @property
         def getNiveauDiplomatie(self):
             return self.__niveauDiplomatie
 
+        #pour le changement de niveau de diplomatie du joueur en fonction de ses choix
         def changeNiveauDiplomatie(self, nouvelleValeure):
             self.__niveauDiplomatie = self.__niveauDiplomatie + nouvelleValeure
             if(self.__niveauDiplomatie > 1):
@@ -105,9 +85,18 @@ init python:
         def possibiliteFarm(self, bool):
             self.__possibiliteFarm = bool
         
-        def avanceJeu(self):
-            self.__debutJeu = False
-    
+        def getManqueDeRessource(self):
+            return self.__manqueDeRessource
+        
+        def conditionDeDefaiteParRessources(self):
+            self.__manqueDeRessource = True
+        
+        def getDiplomatieDoneOnce(self):
+            return self.__diplomatieDoneOnce
+        
+        def diplomatieAlreadyDoneOnce(self):
+            self.__diplomatieDoneOnce = True
+        
     #classe hérité de village
     class VillageEnnemi(Village):
         def __init__(self, nomVillage, ressourceBois, ressourcePierre, ressourceHumain, king, villageChoisi, defeatVillage, humainEnvoyesParVillageEnnemi):
@@ -115,7 +104,7 @@ init python:
             self.__nomVillage = nomVillage #str / nom du village
             self.__ressourceBois = ressourceBois #int / ressources en bois du village
             self.__ressourcePierre = ressourcePierre #int / ressources en pierre du village
-            self.__ressourceHumain = ressourceHumain #int / ressources humaines du villag
+            self.__ressourceHumain = ressourceHumain #int / ressources humaines du village
             self.__king = king #bool / si le village est maitre de l'île
             self.__defeatVillage = defeatVillage #bool / si le village a deja été vaincu par le joueur / default = False
             self.__humainEnvoyesParVillageEnnemi = humainEnvoyesParVillageEnnemi #int / nombre d'humains envoyé au combat par le village adverse / default = 0
@@ -133,6 +122,7 @@ init python:
         def getHumainEnvoyesParVillageEnnemi(self):
             return self.__humainEnvoyesParVillageEnnemi
 
+        #humains envoyés par le village ennemi = nombre aléatoire entre le nombre total d'humains du village village divisé par 2 et le nombre total d'humain du village
         def humainEnvoyesParVillageEnnemi(self):
             self.__humainEnvoyesParVillageEnnemi = random.randint(self.__ressourceHumain/2, self.__ressourceHumain)
             self.__ressourceHumain = self.__ressourceHumain - self.__humainEnvoyesParVillageEnnemi
@@ -154,45 +144,7 @@ init python:
         def niveauSup(self):
             self.__niveau = self.__niveau + 1
 
-#     Titre(_("Que faire ?"))
-
-#     Menu("strategieMap", _("Attaquer"))
-#     Menu("batiments", _("Construire"))
-#     Menu("framRessources", _("Récolter"))
-#     Menu("diplomatie", _("Régler les conflits internes"))
-
-# default menu_adjustment = ui.adjustment()
-
-# screen menuChoix(adj):
-#     frame:
-#         xsize 640
-#         xalign .5
-#         ysize 485
-#         ypos 30
-#         has side "c r b"
-#         viewport:
-#             yadjustment adj
-#             mousewheel False
-#             vbox:
-#                 for i in choix:
-#                     if i.kind == "choix":
-#                         textbutton i.title:
-#                             action Return(i)
-#                             left_padding 20
-#                             xfill True
-#                     else:
-#                         null height 10
-#                         text i.title alt ""
-#                         null height 5
-#         bar adjustment adj style "vscrollbar"
-#         textbutton _("Faire autre chose"):
-#             xfill True
-#             action Return(False)
-#             top_margin 10
-
 #Pour la world map
-
-#https://www.cgtrader.com/items/2492633/download-page lien césar
 screen conquete_map():
     imagemap:
         idle "map"
@@ -202,6 +154,7 @@ screen conquete_map():
         hotspot (813, 209, 100, 63) action Jump("redwater")
         hotspot (818, 411, 99, 64) action Jump("swanford")
         hotspot (329, 456, 99, 63) action Jump("ourBase")
+        #pose de la couronne au dessus du village maitre de l'ile
         if(islesbury.getKing() == True):
             add "king.png" xalign 0.496 yalign 0.14
         elif(redwater.getKing() == True):
@@ -214,7 +167,7 @@ label start:
     $ nombre_guerrier = 0
     $ nombre_archer = 0
     $ nombre_cavalier = 0
-    $ joueur = VillageJoueur("Lunaris", 200, 200, 100, 0, True, 0, True)
+    $ joueur = VillageJoueur("Lunaris", 200, 200, 100, 0, True, 0, True, False, False)
     python:
         nouveauNomVillage = renpy.input("Entrez le nom de votre village (10 caractères max) : ", length=10)
         if not nouveauNomVillage:
@@ -228,18 +181,17 @@ label start:
     
     $ king = renpy.random.randint(1, 3) #definition aléatoire de la cité maitre de l'île 1 = islesbury / 2 = redwater / 3 = swanford
     if(king == 1):
-        #les valeurs aleatoires sont ptet trop élevés
-        $ islesbury = VillageEnnemi("islesbury", renpy.random.randint(500, 700), renpy.random.randint(500, 700), renpy.random.randint(500, 700), True, False, False, 0)
-        $ redwater = VillageEnnemi("redwater", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False, 0)
-        $ swanford = VillageEnnemi("swanford", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False, 0)
+        $ islesbury = VillageEnnemi("Islesbury", renpy.random.randint(500, 700), renpy.random.randint(500, 700), renpy.random.randint(500, 700), True, False, False, 0)
+        $ redwater = VillageEnnemi("Redwater", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False, 0)
+        $ swanford = VillageEnnemi("Swanford", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False, 0)
     elif(king == 2):
-        $ islesbury = VillageEnnemi("islesbury", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False, 0)
-        $ redwater = VillageEnnemi("redwater", renpy.random.randint(500, 700), renpy.random.randint(500, 700), renpy.random.randint(500, 700), True, False, False, 0)
-        $ swanford = VillageEnnemi("swanford", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False, 0)
+        $ islesbury = VillageEnnemi("Islesbury", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False, 0)
+        $ redwater = VillageEnnemi("Redwater", renpy.random.randint(500, 700), renpy.random.randint(500, 700), renpy.random.randint(500, 700), True, False, False, 0)
+        $ swanford = VillageEnnemi("Swanford", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False, 0)
     elif(king == 3):
-        $ islesbury = VillageEnnemi("islesbury", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False, 0)
-        $ redwater = VillageEnnemi("redwater", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False, 0)
-        $ swanford = VillageEnnemi("swanford", renpy.random.randint(500, 700), renpy.random.randint(500, 700), renpy.random.randint(500, 700), True, False, False, 0)
+        $ islesbury = VillageEnnemi("Islesbury", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False, 0)
+        $ redwater = VillageEnnemi("Redwater", renpy.random.randint(350, 500), renpy.random.randint(350, 500), renpy.random.randint(350, 500), False, False, False, 0)
+        $ swanford = VillageEnnemi("Swanford", renpy.random.randint(500, 700), renpy.random.randint(500, 700), renpy.random.randint(500, 700), True, False, False, 0)
     
     #creation des batiments
     $ caserne = Batiment("caserne", 1)
@@ -248,46 +200,140 @@ label start:
     
     scene villagesenateur
     with fade
+    
+    #affichage des pictogrammes
     show ressourcebois:
         xalign 0.005
         yalign 0.05
     show ressourcepierre:
         xalign 0.02
         yalign 0.3
-    #permet d'afficher les ressources, se met constament à jour
+    show pictoguerrier:
+        xalign 0.02
+        yalign 0.55
+    show pictoepuises:
+        xalign 0.02
+        yalign 0.75
+    
+    #afficher les ressources du joueur
     show screen ressourceJoueur
     
-    #les icones sont trop grandes
-    show senateur:
-        xalign 0.5
-        yalign 1.0
+    o "Bien le bonjours monsieur le sénateur !"
     s "Bonjour"
-    show senateur at right
+    menu:
+        o "Vous vous rappelez de comment gérer votre village ?"
+        "Oui":
+            jump choix
+        "Non, rappelez moi":
+            jump tutoriel
+
+label tutoriel:
+    s "Heu, c'est un peu gênant, j'ai oublié comment gerer mon propre village."
+    o "Ouais comme n'importe quel politique quoi."
+    s "Pardon ?"
+    show ressourcebois at truecenter
     with move
+    o "Bien commençons, vous voyez cette bûche ?"
+    o "Le nombre à côté de cette bûche, ici [joueur.getRessourceBois], correspond à votre nombre de ressouces de bois actuel."
+    show ressourcebois:
+        xalign 0.005
+        yalign 0.05
+    with move
+    show ressourcepierre at truecenter
+    with move
+    o "Il en est de même pour les ressources de pierre."
+    show ressourcepierre:
+        xalign 0.02
+        yalign 0.3
+    with move
+    show pictoguerrier at truecenter
+    with move
+    o "Et ce pictogramme représente votre nombre de guerrier actuel."
+    show pictoguerrier:
+        xalign 0.02
+        yalign 0.55
+    with move
+    show pictoepuises at truecenter
+    with move
+    o "Et celui la représente votre nombre de guerriers épuisés, les guerriers s'épuisent après certaines actions."
+    with move
+    show pictoepuises:
+        xalign 0.02
+        yalign 0.75
+    with move
+    o "Bien, Passons aux bâtiments."
+    show screen senatTuto
+    show screen arbreTuto
+    show screen areneTuto
+    o "Comme vous pouvez le voir, dans [joueur.getNomVillage], il y a trois batiments"
+    show screen arbreTutoHover
+    hide screen arbreTuto
+    o "Une scierie ou une mine (représenté par un arbre), ce batiment vous permettra de récolter du bois et des pierres."
+    show screen arbreTuto
+    hide screen arbreTutoHover
+    show screen areneTutoHover
+    hide screen areneTuto
+    o "La caserne, qui vous permettra de former des troupes de guerrier du moment que vous avez assez de ressources."
+    o "La caserne vous permettra également d'attaquer un village ennemi."
+    show screen areneTuto
+    hide screen areneTutoHover
+    show screen senatTutoHover
+    hide screen senatTuto
+    o "Et enfin le sénat, où vous pouvez m'appelez pour régler les conflits de la ville."
+    o "Vous pouvez également améliorer le niveau de tous les bâtiments, mais uniquement si le niveau de votre sénat est suppérieur ou égal."
+    o "Pour chaque amélioration de bâtiment cela vous apportera quelques bonus pour un certain prix en ressources."
+    show screen senatTuto
+    hide screen senatTutoHover
+    o "Et bien je pense qu'on a fait le tour, maintenant c'est à vous."
+    hide screen senatTuto
+    hide screen arbreTuto
+    hide screen areneTuto
     jump choix
 
 label choix:
-    # $ renpy.choice_for_skipping()
-    # call screen menuChoix(adj=menu_adjustment)
-    # $ tutorial = _return
-    # if not tutorial:
-    #     jump end
+    #mise a zéro de toutes les ressources si elles sont négatives (juste au cas ou)
+    if(joueur.getRessourceBois < 0):
+        $ joueur.addRessources(-joueur.getRessourceBois, 0, 0)
+    if(joueur.getRessourcePierre < 0):
+        $ joueur.addRessources(0, -joueur.getRessourcePierre, 0)
+    if(joueur.getRessourceHumain < 0):
+        $ joueur.addRessources(0, 0, -joueur.getRessourceHumain)
     
-    # call expression tutorial.label from _call_expression
-    show screen senat
-    show screen arbre
-    show screen arene
-    o "Sélectionnez un bâtiment"
-    jump choix
+    #condition de défaite si les ressources sont trop faibles, évite aussi de bloquer le joueur.
+    if(joueur.getRessourceBois <= 0 and joueur.getRessourcePierre <= 0 and joueur.getRessourceHumain <= 0):
+        $ joueur.conditionDeDefaiteParRessources()
+        jump defaite
+    else:
+        show screen senat
+        show screen arbre
+        show screen arene
+        o "Sélectionnez un bâtiment."
+        jump choix
 
 label victory:
-    s "wow, we won"
+    o "Bravo monsieur le sénateur, [joueur.getNomVillage] a réussi à devenir maître de l'île grâce à vous !"
     return
 
 label defaite:
-    s "mdr on a perdu"
-    return
+    $ joueur.humainEpuises(-joueur.getHumainEpuises)
+    $ joueur.addRessources(-joueur.getRessourceBois, -joueur.getRessourcePierre, -joueur.getRessourceHumain)
+    if(joueur.getManqueDeRessource() == True):
+        o "Monsieur le sénateur, nous n'avons plus assez de ressources pour continuer."
+        o "C'est la fin de [joueur.getNomVillage]."
+        return
+    else:
+        if(islesbury.getKing() == True):
+            o "A force d'améliorer les batiments de [joueur.getNomVillage], cela a attirer les regards de [islesbury.getNomVillage]."
+        elif(redwater.getKing() == True):
+            o "A force d'améliorer les batiments de [joueur.getNomVillage], cela a attirer les regards de [redwater.getNomVillage]."
+        elif(swanford.getKing() == True):
+            o "A force d'améliorer les batiments de [joueur.getNomVillage], cela a attirer les regards de [swanford.getNomVillage]."
+        o "Ils ont eu peur de nous, et nous ont attaqués par surprises"
+        o "Ils ont pillés toutes nos ressources et tous nos hommes sont morts..."
+        o "C'est la fin de [joueur.getNomVillage]."
+        return
 
+#permet d'afficher les ressources, se met constament à jour
 screen ressourceJoueur:
     frame:
         xpos 0.14

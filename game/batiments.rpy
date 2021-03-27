@@ -101,34 +101,3 @@ label upgrade_building:
                 jump choix
         "Ne rien faire":
             jump choix
-
-#save du programme de kilian // à voir si on garde le système de différents type de combatants ou pas.
-# "Archer":
-#     jump nbr_archer
-# "Cavalier":
-#     jump nbr_cavalier
-# label nbr_archer:
-#     $ fighters_nbr = renpy.input("Combien voulez-vous en entraîner ?", allow="0123456789", length=2)
-#     python:
-#         fighters_nbr = int(fighters_nbr)
-#     $ nombre_archer = fighters_nbr + nombre_archer
-#     if fighters_nbr == "0":
-#         o "Vous n'avez pas formé d'archer."
-#     if fighters_nbr == "1":
-#         o "Vous avez formé [fighters_nbr] archer."
-#     if fighters_nbr > "1":
-#         o "Vous avez formé [fighters_nbr] archers."
-#     jump batiments
-
-# label nbr_cavalier:
-#     $ fighters_nbr = renpy.input("Combien voulez-vous en entraîner ?", allow="0123456789", length=2)
-#     python:
-#         fighters_nbr = int(fighters_nbr)
-#     $ nombre_cavalier = fighters_nbr + nombre_cavalier
-#     if fighters_nbr == "0":
-#         o "Vous n'avez pas formé de cavalier."
-#     if fighters_nbr == "1":
-#         o"Vous avez formé [fighters_nbr] cavalier."
-#     if fighters_nbr > "1":
-#         o "Vous avez formé [fighters_nbr] cavaliers."
-#     jump batiments
