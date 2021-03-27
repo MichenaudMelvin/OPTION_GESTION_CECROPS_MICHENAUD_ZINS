@@ -218,14 +218,76 @@ label start:
     #afficher les ressources du joueur
     show screen ressourceJoueur
     
-    show senateur:
-        xalign 0.5
-        yalign 0.5
+    o "Bien le bonjours monsieur le sénateur !"
     s "Bonjour"
-    show senateur:
-        xalign 0.99
-        yalign 0.5
+    menu:
+        o "Vous vous rappelez de comment gérer votre village ?"
+        "Oui":
+            jump choix
+        "Non, rappelez moi":
+            jump tutoriel
+
+label tutoriel:
+    s "Heu, c'est un peu gênant, j'ai oublié comment gerer mon propre village."
+    o "Ouais comme n'importe quel politique quoi."
+    s "Pardon ?"
+    show ressourcebois at truecenter
     with move
+    o "Bien commençons, vous voyez cette bûche ?"
+    o "Le nombre à côté de cette bûche, ici [joueur.getRessourceBois], correspond à votre nombre de ressouces de bois actuel."
+    show ressourcebois:
+        xalign 0.005
+        yalign 0.05
+    with move
+    show ressourcepierre at truecenter
+    with move
+    o "Il en est de même pour les ressources de pierre."
+    show ressourcepierre:
+        xalign 0.02
+        yalign 0.3
+    with move
+    show pictoguerrier at truecenter
+    with move
+    o "Et ce pictogramme représente votre nombre de guerrier actuel."
+    show pictoguerrier:
+        xalign 0.02
+        yalign 0.55
+    with move
+    show pictoepuises at truecenter
+    with move
+    o "Et celui la représente votre nombre de guerriers épuisés, les guerriers s'épuisent après certaines actions."
+    with move
+    show pictoepuises:
+        xalign 0.02
+        yalign 0.75
+    with move
+    o "Bien, Passons aux bâtiments."
+    show screen senatTuto
+    show screen arbreTuto
+    show screen areneTuto
+    o "Comme vous pouvez le voir, dans [joueur.getNomVillage], il y a trois batiments"
+    show screen arbreTutoHover
+    hide screen arbreTuto
+    o "Une scierie ou une mine (représenté par un arbre), ce batiment vous permettra de récolter du bois et des pierres."
+    show screen arbreTuto
+    hide screen arbreTutoHover
+    show screen areneTutoHover
+    hide screen areneTuto
+    o "La caserne, qui vous permettra de former des troupes de guerrier du moment que vous avez assez de ressources."
+    o "La caserne vous permettra également d'attaquer un village ennemi."
+    show screen areneTuto
+    hide screen areneTutoHover
+    show screen senatTutoHover
+    hide screen senatTuto
+    o "Et enfin le sénat, où vous pouvez m'appelez pour régler les conflits de la ville."
+    o "Vous pouvez également améliorer le niveau de tous les bâtiments, mais uniquement si le niveau de votre sénat est suppérieur ou égal."
+    o "Pour chaque amélioration de bâtiment cela vous apportera quelques bonus pour un certain prix en ressources."
+    show screen senatTuto
+    hide screen senatTutoHover
+    o "Et bien je pense qu'on a fait le tour, maintenant c'est à vous."
+    hide screen senatTuto
+    hide screen arbreTuto
+    hide screen areneTuto
     jump choix
 
 label choix:
